@@ -10,6 +10,10 @@ public class Category {
         Categories = categories;
     }
 
+    public Category() {
+
+    }
+
     public int getId() {
         return id;
     }
