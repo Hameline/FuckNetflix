@@ -64,7 +64,7 @@ public class MainViewController {
     }
 
     @FXML
-    private void handleUploadMovie(ActionEvent actionEvent) throws IOException {
+    private void handleUploadMovie(ActionEvent actionEvent) throws Exception {
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateUpdateMovie.fxml"));
         Parent popupWindow = loader.load();
@@ -79,7 +79,7 @@ public class MainViewController {
         PopupWindow.setScene(new Scene(popupWindow));
         PopupWindow.showAndWait();
 
-
+        tbwMovie.setItems(movieModel.showList());
     }
 
     public void refreshTableViews() {

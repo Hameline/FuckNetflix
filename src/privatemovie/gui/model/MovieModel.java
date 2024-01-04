@@ -28,4 +28,10 @@ public class MovieModel {
         Movie m = movieManager.addMovie(movie);
         listOfMovies.add(m);
     }
+
+    public ObservableList<Movie> showList() throws Exception {
+        listOfMovies.clear();
+        listOfMovies.addAll(movieManager.getAllMovies());
+        return listOfMovies;
+    }
 }
