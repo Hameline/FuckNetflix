@@ -11,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import privatemovie.be.Category;
+import privatemovie.be.Movie;
+import privatemovie.gui.model.MovieModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,10 @@ public class CreateUpdateMovieViewController {
     private Button btnCancel;
 
     private ObservableList<Category> categories = FXCollections.observableArrayList();
+    private MovieModel movieModel = new MovieModel();
+
+    public CreateUpdateMovieViewController() throws Exception {
+    }
 
     @FXML
     private void handleUpdate(ActionEvent actionEvent) {
@@ -45,6 +51,19 @@ public class CreateUpdateMovieViewController {
 
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
+        int rating = Integer.parseInt(String.valueOf(txtIMBDScore.getText()));
+        Movie movie = new Movie(-1, txtMovieName.getText(), rating);
+
+        try {
+            movieModel.addMovie(movie);
+        }
+        catch (Exception e) {
+
+        } finally {
+            btnCreate.getScene().getWindow().hide();
+        }
+
+
     }
 
     @FXML

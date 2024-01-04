@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
    <children>
       <HBox>
@@ -40,9 +39,9 @@
             </TableView>
             <TableView fx:id="tbwMovie" prefHeight="719.0" prefWidth="835.0">
               <columns>
-                <TableColumn prefWidth="78.0" text="IMBD Rating" />
-                <TableColumn prefWidth="502.0" text="Movie Title" />
-                  <TableColumn prefWidth="95.0" text="Personal Rating" />
+                <TableColumn fx:id="tbwMovieIMDBRating" prefWidth="78.0" text="IMDB Rating" />
+                <TableColumn fx:id="tbwMovieTitle" prefWidth="502.0" text="Movie Title" />
+                  <TableColumn fx:id="tbwMoviePersonalRating" prefWidth="95.0" text="Personal Rating" />
                   <TableColumn prefWidth="157.0" text="Time Sinced Last watched" />
               </columns>
             </TableView>

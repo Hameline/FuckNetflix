@@ -7,11 +7,17 @@ public class Movie {
     private double rating;
     private double ownrating;
 
-    public Movie(int id, String name, double rating, double ownrating) {
+    public Movie(int id, String name, int rating, int ownrating) {
         this.id = id;
         this.name = name;
         this.rating = rating;
         this.ownrating = ownrating;
+    }
+
+    public Movie(int id, String name, int rating) {
+        this.id = id;
+        this.name = name;
+        this.rating = rating;
     }
 
     public int getId() {
