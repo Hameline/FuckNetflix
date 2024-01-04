@@ -37,7 +37,7 @@ public class CreateUpdateMovieViewController {
     @FXML
     private Button btnCancel;
 
-    private ObservableList<String> categories = FXCollections.observableArrayList();
+    private ObservableList<Category> categories = FXCollections.observableArrayList();
 
     @FXML
     private void handleUpdate(ActionEvent actionEvent) {
@@ -60,7 +60,9 @@ public class CreateUpdateMovieViewController {
         // Detects if the ENTER KEY have been PRESSED
         if (keyEvent.getCode() == KeyCode.ENTER) {
             if (!(txtCategory.getText().isEmpty())) {
-                categories.add(txtCategory.getText());
+                Category c = new Category();
+                c.setCategories(txtCategory.getText().toString());
+                categories.add(c);
 
 
                 txtCategory.setText("");

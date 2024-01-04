@@ -3,14 +3,19 @@ package privatemovie.be;
 public class Category {
 
     private int id;
-    private String Categories;
+    private String category;
 
     public Category(int id, String categories) {
         this.id = id;
-        Categories = categories;
+        category = categories;
     }
 
     public Category() {
+
+    }
+
+    public Category(String categories) {
+        this.category = categories;
 
     }
 
@@ -23,10 +28,14 @@ public class Category {
     }
 
     public String getCategories() {
-        return Categories;
+        return category;
     }
 
     public void setCategories(String categories) {
-        Categories = categories;
+        category = categories;
+    }
+
+    public String toString() {
+        return category;
     }
 }
