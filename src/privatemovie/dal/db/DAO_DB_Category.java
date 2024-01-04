@@ -8,10 +8,10 @@ import java.util.List;
 
 public class DAO_DB_Category implements ICategoryDataAccess {
 
-    private PrivateMovieDatabseConnector databaseConnector;
+    private PrivateMovieDatabaseConnector databaseConnector;
 
     public DAO_DB_Category() throws IOException {
-        databaseConnector = new PrivateMovieDatabseConnector();
+        databaseConnector = new PrivateMovieDatabaseConnector();
     }
     @Override
     public List<Category> getAllCategories() throws Exception {
