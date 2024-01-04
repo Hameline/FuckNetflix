@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -51,20 +52,29 @@ public class CreateUpdateMovieViewController {
 
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
-        int rating = Integer.parseInt(String.valueOf(txtIMBDScore.getText()));
+        int rating = Integer.parseInt(txtIMBDScore.getText());
         Movie movie = new Movie(-1, txtMovieName.getText(), rating);
 
         try {
             movieModel.addMovie(movie);
         }
         catch (Exception e) {
-
+            displayError(e);
+            e.printStackTrace();
         } finally {
+
             btnCreate.getScene().getWindow().hide();
         }
-
-
     }
+
+    private void displayError(Throwable t)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Something went wrong");
+        alert.setHeaderText(t.getMessage());
+        alert.showAndWait();
+    }
+
 
     @FXML
     private void handleChooseFile(ActionEvent actionEvent) {

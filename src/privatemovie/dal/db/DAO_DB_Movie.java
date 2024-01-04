@@ -47,15 +47,15 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     @Override
     public Movie addMovie(Movie movie) throws Exception {
         // SQL statement for creating a new Movie
-        String sqlPlaylist = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating) VALUES (?,?);";
+        String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating) VALUES (?,?);";
 
         try (Connection conn = databseConnector.getConnection()) {
             // this makes it able for us to run one statement at the time, so that both will have an effect on the database.
             conn.setAutoCommit(false);
-            try (PreparedStatement stmtMovie = conn.prepareStatement(sqlPlaylist, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement stmtMovie = conn.prepareStatement(sqlMovie, Statement.RETURN_GENERATED_KEYS)) {
                 // Bind parameters for Movie
-                stmtMovie.setString(1, movie.getMovieTitle());
-                stmtMovie.setString(2, String.valueOf(movie.getRating()));
+                stmtMovie.setString(1, movie.getName());
+                stmtMovie.setInt(2, movie.getRating());
                 // Run the SQL statement for Movie.
                 stmtMovie.executeUpdate();
                 // Get the Movie ID from the DB

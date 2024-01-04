@@ -4,8 +4,8 @@ public class Movie {
 
     private int id;
     private String name;
-    private double rating;
-    private double ownrating;
+    private int rating;
+    private int ownrating;
 
     public Movie(int id, String name, int rating, int ownrating) {
         this.id = id;
@@ -36,14 +36,14 @@ public class Movie {
         this.name = name;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
-    public void setOwnrating(double ownrating) {
+    public void setOwnrating(int ownrating) {
         this.ownrating = ownrating;
     }
     public double getOwnrating(){
@@ -51,10 +51,6 @@ public class Movie {
     }
 
     public String getMovieTitle() {
-        return null;
-    }
-
-    public String getArtistName() {
         return null;
     }
 

@@ -16,7 +16,6 @@ public class MovieSearcher {
             // contain the specified query (case-insensitive)
             if (
                     containsIgnoreCase(query, movie.getMovieTitle())
-                            || containsIgnoreCase(query, movie.getArtistName())
                             || containsIgnoreCase(query, movie.getGenreType())
                             || containsIgnoreCase(query, movie.getMovieDuration())
             ) {

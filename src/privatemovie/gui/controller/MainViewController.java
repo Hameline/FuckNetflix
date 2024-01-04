@@ -78,5 +78,12 @@ public class MainViewController {
 
         PopupWindow.setScene(new Scene(popupWindow));
         PopupWindow.showAndWait();
+
+
+    }
+
+    public void refreshTableViews() {
+        tbwMovie.refresh();
+        tbwCategory.refresh();
     }
 }
