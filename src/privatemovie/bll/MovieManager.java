@@ -21,7 +21,8 @@ public class MovieManager {
     public Movie addMovie(Movie movie) throws Exception {
         return movieDAO.addMovie(movie);
     }
-    public void deletedMovie(Movie deletedMovie) throws Exception {
+    public Movie deletedMovie(Movie deletedMovie) throws Exception {
         movieDAO.deletedMovie(deletedMovie);
+        return deletedMovie;
     }
 }

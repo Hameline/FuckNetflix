@@ -8,12 +8,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import privatemovie.be.Movie;
 import privatemovie.gui.model.MovieModel;
 
 import java.io.IOException;
@@ -39,9 +42,14 @@ public class MainViewController {
     public MainViewController() throws Exception {
     }
 
-    public void setup () {
+    private void handleBtns() {
         btnDeleteMovie.setVisible(false);
         btnUpdateMovie.setVisible(false);
+
+    }
+
+    public void setup () {
+        handleBtns();
 
         if (movieModel != null) {
             tbwMovie.setItems(movieModel.getListOfMovies());
@@ -57,10 +65,27 @@ public class MainViewController {
 
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) {
+        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+        if (selectedMovie != null) {
+            try {
+                // Delete movie in DAL layer (through the layers)
+                movieModel.deleteMovie(selectedMovie);
+            } catch (Exception e) {
+                displayError(e);
+                e.printStackTrace();
+            }
+        }
+        btnDeleteMovie.setVisible(false);
+        btnUpdateMovie.setVisible(false);
+
+        refreshTableViews();
     }
 
     @FXML
     private void handleUpdateMovie(ActionEvent actionEvent) {
+        btnDeleteMovie.setVisible(false);
+        btnUpdateMovie.setVisible(false);
+
     }
 
     @FXML
@@ -85,5 +110,22 @@ public class MainViewController {
     public void refreshTableViews() {
         tbwMovie.refresh();
         tbwCategory.refresh();
+    }
+
+    @FXML
+    private void handleSelectedMovie(MouseEvent mouseEvent) {
+        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+        if (selectedMovie != null) {
+            btnDeleteMovie.setVisible(true);
+            btnUpdateMovie.setVisible(true);
+        }
+    }
+
+    private void displayError(Throwable t)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Something went wrong");
+        alert.setHeaderText(t.getMessage());
+        alert.showAndWait();
     }
 }

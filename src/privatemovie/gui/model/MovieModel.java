@@ -34,4 +34,10 @@ public class MovieModel {
         listOfMovies.addAll(movieManager.getAllMovies());
         return listOfMovies;
     }
+
+    // Method to delete a Movie
+    public void deleteMovie(Movie movie) throws Exception {
+        Movie m = movieManager.deletedMovie(movie);
+        listOfMovies.remove(m);
+    }
 }

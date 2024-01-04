@@ -85,6 +85,19 @@ public class DAO_DB_Movie implements IMovieDataAccess {
 
     @Override
     public void deletedMovie(Movie deletedMovie) throws Exception {
+        // SQL statement
+        // then we delete from the playlist from the database.
+        String sqlMovie = "DELETE FROM FuckNetflix.dbo.Movie WHERE MovieID = ? ";
 
+        try (Connection conn = databseConnector.getConnection()) {
+            // here we delete the playlist from the database. No need to check for user id anymore.
+            try (PreparedStatement stmtMovie = conn.prepareStatement(sqlMovie)) {
+                stmtMovie.setInt(1, deletedMovie.getId());
+                stmtMovie.executeUpdate();
+            }
+        } catch (SQLException se){
+            se.printStackTrace();
+            throw new Exception("Failed to delete.", se);
+        }
     }
 }
