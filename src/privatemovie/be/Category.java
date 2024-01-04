@@ -38,4 +38,8 @@ public class Category {
     public String toString() {
         return category;
     }
+
+    public String getCategory() {
+        return null;
+    }
 }
