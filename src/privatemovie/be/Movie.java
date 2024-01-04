@@ -54,7 +54,7 @@ public class Movie {
     public void setOwnrating(int ownrating) {
         this.ownrating = ownrating;
     }
-    public double getOwnrating(){
+    public int getOwnrating(){
         return ownrating;
     }
 

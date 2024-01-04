@@ -100,4 +100,29 @@ public class DAO_DB_Movie implements IMovieDataAccess {
             throw new Exception("Failed to delete.", se);
         }
     }
+
+    @Override
+    public Movie updateMovie(Movie movie) throws Exception {
+        String sql = "UPDATE FuckNetflix.dbo.Movie SET MovieName = ?, IMDBRating = ?, PersonalRating = ? WHERE MovieID = ?;";
+
+        try (Connection conn = databseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+
+            // Bind parameters
+            stmt.setString(1, movie.getName());
+            stmt.setInt(2, movie.getRating());
+            stmt.setInt(3, movie.getOwnrating());
+            stmt.setInt(4, movie.getId());
+
+            // Run the specified SQL statement
+            stmt.executeUpdate();
+        }
+        catch (SQLException ex)
+        {
+            ex.printStackTrace();
+            throw new Exception("Could not update Movie", ex);
+        }
+        return movie;
+    }
 }

@@ -82,7 +82,26 @@ public class MainViewController {
     }
 
     @FXML
-    private void handleUpdateMovie(ActionEvent actionEvent) {
+    private void handleUpdateMovie(ActionEvent actionEvent) throws Exception {
+        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateUpdateMovie.fxml"));
+        Parent popupWindow = loader.load();
+
+        CreateUpdateMovieViewController controller = loader.getController();
+        controller.setMovie(selectedMovie);
+
+        Stage PopupWindow = new Stage();
+        PopupWindow.setTitle("Upload/Update Movie");
+        PopupWindow.initModality(Modality.APPLICATION_MODAL);
+        PopupWindow.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
+
+        PopupWindow.setScene(new Scene(popupWindow));
+        PopupWindow.showAndWait();
+
+        tbwMovie.setItems(movieModel.showList());
+
         btnDeleteMovie.setVisible(false);
         btnUpdateMovie.setVisible(false);
 

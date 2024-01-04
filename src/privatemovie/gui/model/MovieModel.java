@@ -9,9 +9,11 @@ public class MovieModel {
     private ObservableList<Movie> listOfMovies;
 
     private MovieManager movieManager;
+    private Movie selectedMovie;
 
     public MovieModel() throws Exception {
         movieManager = new MovieManager();
+        selectedMovie = new Movie();
 
         listOfMovies = FXCollections.observableArrayList();
         listOfMovies.addAll(movieManager.getAllMovies());
@@ -39,5 +41,17 @@ public class MovieModel {
     public void deleteMovie(Movie movie) throws Exception {
         Movie m = movieManager.deletedMovie(movie);
         listOfMovies.remove(m);
+    }
+
+    // Method to update Movie information
+    public void updateMovie(Movie movie) throws Exception {
+
+        Movie m = selectedMovie;
+        m.setName(movie.getName());
+        m.setOwnrating(movie.getOwnrating());
+        m.setRating(movie.getRating());;
+        m.setId(movie.getId());
+
+        movieManager.updateMovie(movie);
     }
 }

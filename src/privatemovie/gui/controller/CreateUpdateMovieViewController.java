@@ -42,12 +42,36 @@ public class CreateUpdateMovieViewController {
 
     private ObservableList<Category> categories = FXCollections.observableArrayList();
     private MovieModel movieModel = new MovieModel();
+    private Movie selectedMovie = new Movie();
 
     public CreateUpdateMovieViewController() throws Exception {
     }
 
+    public void setMovie(Movie movie) {
+        selectedMovie = movie;
+        txtMovieName.setText(movie.getName());
+        txtIMBDScore.setText(String.valueOf(movie.getRating()));
+        if (movie.getOwnrating() != 0) {
+            txtPersonalRating.setText(String.valueOf(movie.getOwnrating()));
+        }
+
+    }
+
     @FXML
     private void handleUpdate(ActionEvent actionEvent) {
+        try {
+            selectedMovie.setName(txtMovieName.getText());
+            selectedMovie.setRating(Integer.parseInt(txtIMBDScore.getText()));
+            selectedMovie.setOwnrating(Integer.parseInt(txtPersonalRating.getText()));
+
+
+            movieModel.updateMovie(selectedMovie);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            btnUpdate.getScene().getWindow().hide();
+        }
     }
 
     @FXML
