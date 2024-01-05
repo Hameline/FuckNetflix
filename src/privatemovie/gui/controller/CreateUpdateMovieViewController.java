@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -13,12 +14,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
+import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class CreateUpdateMovieViewController {
+public class CreateUpdateMovieViewController extends BaseController implements Initializable {
     @FXML
     private TextField txtMovieName;
     @FXML
@@ -39,10 +43,10 @@ public class CreateUpdateMovieViewController {
     private Button chooseFIle;
     @FXML
     private Button btnCancel;
-
     private ObservableList<Category> categories = FXCollections.observableArrayList();
-    private MovieModel movieModel = new MovieModel();
     private Movie selectedMovie = new Movie();
+    private MovieModel movieModel;
+    private CategoryModel categoryModel;
 
     public CreateUpdateMovieViewController() throws Exception {
     }
@@ -54,7 +58,20 @@ public class CreateUpdateMovieViewController {
         if (movie.getOwnrating() != 0) {
             txtPersonalRating.setText(String.valueOf(movie.getOwnrating()));
         }
+    }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            categoryModel = new CategoryModel();
+            movieModel = new MovieModel();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void setup() {
     }
 
     @FXML

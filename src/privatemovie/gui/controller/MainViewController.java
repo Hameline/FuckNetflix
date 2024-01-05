@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,13 +17,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 import privatemovie.be.Movie;
+import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainViewController {
+public class MainViewController extends BaseController implements Initializable {
     public TableColumn tbwMovieIMDBRating;
     public TableColumn tbwMovieTitle;
     public TableColumn tbwMoviePersonalRating;
@@ -36,15 +41,27 @@ public class MainViewController {
     private TableView tbwCategory;
     @FXML
     private TableView tbwMovie;
-
-    private MovieModel movieModel = new MovieModel();
+    private String errorText;
+    private MovieModel movieModel;
+    private CategoryModel categoryModel;
 
     public MainViewController() throws Exception {
+        try {
+            movieModel = new MovieModel();
+            categoryModel = new CategoryModel();
+        } catch (Exception e) {
+            displayError(e);
+        }
     }
 
     private void handleBtns() {
         btnDeleteMovie.setVisible(false);
         btnUpdateMovie.setVisible(false);
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
     }
 
@@ -131,6 +148,7 @@ public class MainViewController {
         tbwCategory.refresh();
     }
 
+
     @FXML
     private void handleSelectedMovie(MouseEvent mouseEvent) {
         Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
@@ -140,10 +158,9 @@ public class MainViewController {
         }
     }
 
-    private void displayError(Throwable t)
-    {
+    private void displayError(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Something went wrong");
+        alert.setTitle(errorText);
         alert.setHeaderText(t.getMessage());
         alert.showAndWait();
     }
