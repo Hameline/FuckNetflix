@@ -31,8 +31,8 @@ public class DAO_DB_Category implements ICategoryDataAccess {
             while (rs.next()) {
 
                 //Map DB row to Category object
-                int id = rs.getInt("Id");
-                String name = rs.getString("Name");
+                int id = rs.getInt("CategoryID");
+                String name = rs.getString("CategoryName");
 
                 Category category = new Category(id, name);
 
@@ -47,14 +47,14 @@ public class DAO_DB_Category implements ICategoryDataAccess {
     }
 
     @Override
-    public Category addCategory(String name) throws Exception {
-        String sql = "INSERT INTO FuckNetflix.dbo.Category (name) VALUES (?);";
+    public Category addCategory(Category category) throws Exception {
+        String sql = "INSERT INTO FuckNetflix.dbo.Category (CategoryName) VALUES (?);";
 
         try (Connection conn = databaseConnector.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // Bind parameters
-            stmt.setString(1, name);
+            stmt.setString(1, (category.getCategory()));
 
             // Run the specified SQL statement
             stmt.executeUpdate();
@@ -68,7 +68,6 @@ public class DAO_DB_Category implements ICategoryDataAccess {
             }
 
             // Create Category object and send up the layers
-            Category category = new Category(id, name);
 
             return category;
 

@@ -40,6 +40,6 @@ public class Category {
     }
 
     public String getCategory() {
-        return null;
+        return category;
     }
 }

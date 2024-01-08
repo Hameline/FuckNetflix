@@ -23,5 +23,5 @@ public abstract class BaseController {
         this.categoriesModel = categoriesModel;
     }
 
-    public abstract void setup();
+    public abstract void setup() throws Exception;
 }

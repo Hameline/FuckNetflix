@@ -20,6 +20,7 @@
             </Label>
             <ButtonBar prefHeight="41.0" prefWidth="492.0">
               <buttons>
+                  <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" text="Create Category" />
                 <Button fx:id="btnDeleteMovie" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete Movie" />
                   <Button fx:id="btnUpdateMovie" mnemonicParsing="false" onAction="#handleUpdateMovie" text="Update Movie" />
                   <Button fx:id="btnUploadMovie" mnemonicParsing="false" onAction="#handleUploadMovie" text="Upload Movie" />
@@ -34,7 +35,7 @@
          <children>
             <TableView fx:id="tbwCategory" prefHeight="719.0" prefWidth="154.0">
               <columns>
-                <TableColumn prefWidth="155.0" text="Category" />
+                <TableColumn fx:id="tbwCategoryTitle" prefWidth="155.0" text="Category" />
               </columns>
             </TableView>
             <TableView fx:id="tbwMovie" onMouseClicked="#handleSelectedMovie" prefHeight="719.0" prefWidth="835.0">

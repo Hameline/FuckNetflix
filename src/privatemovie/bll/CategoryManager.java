@@ -16,8 +16,8 @@ public class CategoryManager {
         return categoriesDAO.getAllCategories();
     }
 
-    public Category addCategory(String name) throws Exception {
-        return categoriesDAO.addCategory(name);
+    public Category addCategory(Category category) throws Exception {
+        return categoriesDAO.addCategory(category);
     }
 
     public void deleteCategory(Category deletedCategories) throws Exception {

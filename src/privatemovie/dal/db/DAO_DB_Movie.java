@@ -17,7 +17,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     }
     @Override
     public List<Movie> getAllMovies() throws Exception {
-        ArrayList<Movie> allPlaylists = new ArrayList<>();
+        ArrayList<Movie> allMovies = new ArrayList<>();
 
         try (Connection conn = databseConnector.getConnection();
              Statement stmt = conn.createStatement())
@@ -33,9 +33,9 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 int personalRating = rs.getInt("PersonalRating");
 
                 Movie movie = new Movie(id, name, imbdRating, personalRating);
-                allPlaylists.add(movie);
+                allMovies.add(movie);
             }
-            return allPlaylists;
+            return allMovies;
         }
         catch (SQLException ex)
         {

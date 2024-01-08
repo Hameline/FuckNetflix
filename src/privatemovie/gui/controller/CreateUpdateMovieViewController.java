@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
+import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
@@ -46,6 +47,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private ObservableList<Category> categories = FXCollections.observableArrayList();
     private Movie selectedMovie = new Movie();
     private MovieModel movieModel;
+    private CatMovieModel catMovieModel;
     private CategoryModel categoryModel;
 
     public CreateUpdateMovieViewController() throws Exception {
@@ -65,6 +67,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         try {
             categoryModel = new CategoryModel();
             movieModel = new MovieModel();
+            addToComboBox();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -116,6 +119,17 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         alert.showAndWait();
     }
 
+    private void addToComboBox(){
+        try {
+            categories = categoryModel.showList();
+            for (Category type : categories){
+                menuTotalCategories.getItems().add(type.getCategory());
+            }
+            menuTotalCategories.getSelectionModel().selectFirst();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @FXML
     private void handleChooseFile(ActionEvent actionEvent) {
@@ -123,6 +137,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
 
     @FXML
     private void handleCancel(ActionEvent actionEvent) {
+        btnCancel.getScene().getWindow().hide();
     }
 
     @FXML
@@ -146,4 +161,5 @@ public class CreateUpdateMovieViewController extends BaseController implements I
             }
         }
     }
+
 }

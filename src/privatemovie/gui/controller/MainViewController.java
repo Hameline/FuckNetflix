@@ -31,6 +31,8 @@ public class MainViewController extends BaseController implements Initializable 
     public TableColumn tbwMovieIMDBRating;
     public TableColumn tbwMovieTitle;
     public TableColumn tbwMoviePersonalRating;
+    public Button btnCreateCategory;
+    public TableColumn tbwCategoryTitle;
     @FXML
     private Button btnDeleteMovie;
     @FXML
@@ -65,20 +67,23 @@ public class MainViewController extends BaseController implements Initializable 
 
     }
 
-    public void setup () {
+    public void setup () throws Exception {
         handleBtns();
 
         if (movieModel != null) {
             tbwMovie.setItems(movieModel.getListOfMovies());
+            tbwCategory.setItems(categoryModel.showList());
 
         }
 
+        tbwCategoryTitle.setCellValueFactory(new PropertyValueFactory<>("category"));
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
 
 
     }
+
 
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) {
@@ -163,5 +168,23 @@ public class MainViewController extends BaseController implements Initializable 
         alert.setTitle(errorText);
         alert.setHeaderText(t.getMessage());
         alert.showAndWait();
+    }
+
+    public void handleCreateCategory(ActionEvent actionEvent) throws Exception {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateCategory.fxml"));
+        Parent popupWindow = loader.load();
+
+        CreateCategoryViewController controller = loader.getController();
+
+        Stage PopupWindow = new Stage();
+        PopupWindow.setTitle("Create Category");
+        PopupWindow.initModality(Modality.APPLICATION_MODAL);
+        PopupWindow.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
+
+        PopupWindow.setScene(new Scene(popupWindow));
+        PopupWindow.showAndWait();
+
+        tbwCategory.setItems(categoryModel.showList());
     }
 }
