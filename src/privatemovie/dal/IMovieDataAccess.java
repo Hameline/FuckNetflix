@@ -9,7 +9,7 @@ public interface IMovieDataAccess {
 
     public Movie addMovie(Movie movie) throws Exception;
 
-    public void deletedMovie(Movie deletedMovie) throws Exception;
+    public Movie deletedMovie(Movie deletedMovie) throws Exception;
 
     public Movie updateMovie(Movie movie) throws Exception;
 }

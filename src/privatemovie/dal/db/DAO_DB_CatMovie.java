@@ -1,11 +1,12 @@
 package privatemovie.dal.db;
 
-import privatemovie.be.Category;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import privatemovie.be.CatMovie;
 import privatemovie.be.Movie;
 import privatemovie.dal.ICatMovieDataAccess;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DAO_DB_CatMovie implements ICatMovieDataAccess {
@@ -17,13 +18,13 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
     }
 
     public List<Movie> getAllMoviesFromCategory(int categoryId) throws Exception {
-        ArrayList<Movie> allMovies = new ArrayList<>();
+        ObservableList<Movie> allMovies = FXCollections.observableArrayList();
 
         try (Connection conn = databaseConnector.getConnection();
              Statement stmt = conn.createStatement()) {
 
             String sql = "SELECT * FROM FuckNetflix.dbo.Movie M, FuckNetflix.dbo.CatMovie CM, FuckNetflix.dbo.Category C  " +
-                    "WHERE M.Id = CM.MovieId and C.Id = CM.CategoryId and CM.CategoryId=" + categoryId + ";";
+                    "WHERE M.MovieID = CM.MovieID and C.CategoryID = CM.CategoryID and CM.CategoryID=" + categoryId + ";";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -31,10 +32,10 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
             while (rs.next()) {
 
                 //Map DB row to Song object
-                int id = rs.getInt("Id");
-                String name = rs.getString("Name");
-                int rating = rs.getInt("rating");
-                int ownrating = rs.getInt("ownrating");
+                int id = rs.getInt("MovieID");
+                String name = rs.getString("MovieName");
+                int rating = rs.getInt("IMDBRating");
+                int ownrating = rs.getInt("PersonalRating");
 
                 Movie movie = new Movie(id, name, rating, ownrating);
 
@@ -49,18 +50,23 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
         }
     }
 
-    public void addMovieToCategory(Movie selectedMovie, Category selectedCategory) throws SQLException {
-        String sql = "INSERT INTO FuckNetflix.dbo.CatMovie (CategoryId, MovieId) VALUES (?,?);";
+    public CatMovie addMovieToCategory(CatMovie newCatMovie) throws SQLException {
+        String sql = "INSERT INTO FuckNetflix.dbo.CatMovie (MovieID, CategoryID) VALUES (?,?);";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            int category = selectedCategory.getId();
-            int movie = selectedMovie.getId();
-            stmt.setInt(1, category);
-            stmt.setInt(2, movie);
+            int category = newCatMovie.getCategoryID();
+            int movie = newCatMovie.getMovieID();
+            stmt.setInt(1, movie);
+            stmt.setInt(2, category);
             // Run the specified SQL statement
             stmt.executeUpdate();
+
+            CatMovie addMovieToCategory = new CatMovie(newCatMovie.getMovieID(), newCatMovie.getCategoryID());
+
+            return addMovieToCategory;
+
         }
     }
 }

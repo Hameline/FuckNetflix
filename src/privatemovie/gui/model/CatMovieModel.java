@@ -2,6 +2,7 @@ package privatemovie.gui.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
 import privatemovie.bll.CatMovieManager;
@@ -28,8 +29,7 @@ public class CatMovieModel {
         return listOfMovies;
     }
 
-    public void addMovieToCategory(Movie selectedMovie, Category selectedCategory) throws SQLException
-    {
-        catMovieManager.addMovieToCategory(selectedMovie, selectedCategory);
+    public void addMovieToCategory(CatMovie newCatMovie) throws SQLException {
+        catMovieManager.addMovieToCategory(newCatMovie);
     }
 }

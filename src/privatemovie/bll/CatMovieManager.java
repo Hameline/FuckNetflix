@@ -1,11 +1,12 @@
 package privatemovie.bll;
 
+import javafx.collections.ObservableList;
+import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
 import privatemovie.dal.db.DAO_DB_CatMovie;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class CatMovieManager {
 
@@ -15,11 +16,11 @@ public class CatMovieManager {
         catMovieDAO = new DAO_DB_CatMovie();
     }
 
-    public List<Movie> getAllMoviesFromCategory(int CategoryId) throws Exception {
-        return catMovieDAO.getAllMoviesFromCategory(CategoryId);
+    public ObservableList getAllMoviesFromCategory(int CategoryId) throws Exception {
+        return (ObservableList) catMovieDAO.getAllMoviesFromCategory(CategoryId);
     }
 
-    public void addMovieToCategory(Movie selectedMovie, Category selectedCategory) throws SQLException {
-        catMovieDAO.addMovieToCategory(selectedMovie, selectedCategory);
+    public void addMovieToCategory(CatMovie newCatMovie) throws SQLException {
+        catMovieDAO.addMovieToCategory(newCatMovie);
     }
 }

@@ -9,21 +9,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
+<VBox prefHeight="760.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
    <children>
       <HBox>
          <children>
-            <Label prefHeight="41.0" prefWidth="482.0" text="Private Movie Collection">
+            <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" prefHeight="41.0" prefWidth="153.0" text="Create Category" />
+            <Label prefHeight="41.0" prefWidth="133.0" text="Private Movie Collection">
                <HBox.margin>
                   <Insets left="5.0" />
                </HBox.margin>
             </Label>
-            <ButtonBar prefHeight="41.0" prefWidth="492.0">
+            <ButtonBar prefHeight="41.0" prefWidth="685.0">
               <buttons>
-                  <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" text="Create Category" />
                 <Button fx:id="btnDeleteMovie" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete Movie" />
                   <Button fx:id="btnUpdateMovie" mnemonicParsing="false" onAction="#handleUpdateMovie" text="Update Movie" />
                   <Button fx:id="btnUploadMovie" mnemonicParsing="false" onAction="#handleUploadMovie" text="Upload Movie" />
+                  <Button fx:id="btnUnCatMovies" mnemonicParsing="false" onAction="#handleUnCatMovies" prefHeight="25.0" prefWidth="147.0" text="Uncategorised Movies" />
               </buttons>
                <HBox.margin>
                   <Insets right="5.0" />
@@ -33,7 +34,7 @@
       </HBox>
       <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="719.0" prefWidth="984.0">
          <children>
-            <TableView fx:id="tbwCategory" prefHeight="719.0" prefWidth="154.0">
+            <TableView fx:id="tbwCategory" onMouseClicked="#handleSelectedCategory" prefHeight="719.0" prefWidth="154.0">
               <columns>
                 <TableColumn fx:id="tbwCategoryTitle" prefWidth="155.0" text="Category" />
               </columns>

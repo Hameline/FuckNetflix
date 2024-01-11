@@ -84,21 +84,39 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     }
 
     @Override
-    public void deletedMovie(Movie deletedMovie) throws Exception {
+    public Movie deletedMovie(Movie deletedMovie) throws Exception {
         // SQL statement
-        // then we delete from the playlist from the database.
+        String sqlCatMovieSQL = "delete from FuckNetflix.dbo.CatMovie where MovieID = ?";
         String sqlMovie = "DELETE FROM FuckNetflix.dbo.Movie WHERE MovieID = ? ";
 
-        try (Connection conn = databseConnector.getConnection()) {
-            // here we delete the playlist from the database. No need to check for user id anymore.
-            try (PreparedStatement stmtMovie = conn.prepareStatement(sqlMovie)) {
-                stmtMovie.setInt(1, deletedMovie.getId());
-                stmtMovie.executeUpdate();
+        try (Connection conn = databseConnector.getConnection();
+             PreparedStatement sqlCatMovieSQLstmt = conn.prepareStatement(sqlCatMovieSQL);
+             PreparedStatement sqlMoviestmt = conn.prepareStatement(sqlMovie)) {
+            // Start a transaction
+            conn.setAutoCommit(false);
+
+            try {
+                // Delete the song itself
+                sqlCatMovieSQLstmt.setInt(1, deletedMovie.getId());
+                sqlCatMovieSQLstmt.executeUpdate();
+
+                sqlMoviestmt.setInt(1, deletedMovie.getId());
+                sqlMoviestmt.executeUpdate();
+                // Commit the transaction if everything is successful
+                conn.commit();
+            } catch (SQLException ex) {
+                // Rollback the transaction if an error occurs
+                conn.rollback();
+                throw new Exception("Could not delete song", ex);
+            } finally {
+                // Reset auto-commit to true
+                conn.setAutoCommit(true);
             }
-        } catch (SQLException se){
-            se.printStackTrace();
-            throw new Exception("Failed to delete.", se);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new Exception("Could not delete song", ex);
         }
+        return deletedMovie;
     }
 
     @Override

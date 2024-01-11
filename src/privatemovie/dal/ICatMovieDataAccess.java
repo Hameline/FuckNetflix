@@ -1,6 +1,6 @@
 package privatemovie.dal;
 
-import privatemovie.be.Category;
+import privatemovie.be.CatMovie;
 import privatemovie.be.Movie;
 
 import java.sql.SQLException;
@@ -10,5 +10,5 @@ public interface ICatMovieDataAccess {
 
     public List<Movie> getAllMoviesFromCategory(int categoryId) throws Exception;
 
-    public void addMovieToCategory(Movie selectedMovie, Category selectedcategory) throws SQLException;
+    CatMovie addMovieToCategory(CatMovie newCatMovie) throws SQLException;
 }

@@ -18,7 +18,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import privatemovie.be.CatMovie;
+import privatemovie.be.Category;
 import privatemovie.be.Movie;
+import privatemovie.bll.CatMovieManager;
+import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
@@ -33,6 +37,7 @@ public class MainViewController extends BaseController implements Initializable 
     public TableColumn tbwMoviePersonalRating;
     public Button btnCreateCategory;
     public TableColumn tbwCategoryTitle;
+    public Button btnUnCatMovies;
     @FXML
     private Button btnDeleteMovie;
     @FXML
@@ -46,6 +51,10 @@ public class MainViewController extends BaseController implements Initializable 
     private String errorText;
     private MovieModel movieModel;
     private CategoryModel categoryModel;
+    private Movie storeMovie = new Movie();
+    private Category storeCategory = new Category();
+    private CatMovieManager catMovieManager= new CatMovieManager();
+    private boolean allowAddingMoviesToCategories = false;
 
     public MainViewController() throws Exception {
         try {
@@ -86,12 +95,11 @@ public class MainViewController extends BaseController implements Initializable 
 
 
     @FXML
-    private void handleDeleteMovie(ActionEvent actionEvent) {
-        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
-        if (selectedMovie != null) {
+    private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
+        if (storeMovie != null) {
             try {
                 // Delete movie in DAL layer (through the layers)
-                movieModel.deleteMovie(selectedMovie);
+                movieModel.deleteMovie(storeMovie);
             } catch (Exception e) {
                 displayError(e);
                 e.printStackTrace();
@@ -100,19 +108,17 @@ public class MainViewController extends BaseController implements Initializable 
         btnDeleteMovie.setVisible(false);
         btnUpdateMovie.setVisible(false);
 
-        refreshTableViews();
+       tbwMovie.setItems(movieModel.showList());
     }
 
     @FXML
     private void handleUpdateMovie(ActionEvent actionEvent) throws Exception {
-        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
-
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateUpdateMovie.fxml"));
         Parent popupWindow = loader.load();
 
         CreateUpdateMovieViewController controller = loader.getController();
-        controller.setMovie(selectedMovie);
+        controller.setMovie(storeMovie);
 
         Stage PopupWindow = new Stage();
         PopupWindow.setTitle("Upload/Update Movie");
@@ -157,9 +163,11 @@ public class MainViewController extends BaseController implements Initializable 
     @FXML
     private void handleSelectedMovie(MouseEvent mouseEvent) {
         Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+        storeMovie = selectedMovie;
         if (selectedMovie != null) {
             btnDeleteMovie.setVisible(true);
             btnUpdateMovie.setVisible(true);
+            allowAddingMoviesToCategories = true;
         }
     }
 
@@ -186,5 +194,63 @@ public class MainViewController extends BaseController implements Initializable 
         PopupWindow.showAndWait();
 
         tbwCategory.setItems(categoryModel.showList());
+    }
+
+    public void handleUnCatMovies(ActionEvent actionEvent) {
+        if (movieModel != null) {
+            tbwMovie.setItems(movieModel.getListOfMovies());
+
+        }
+        tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+    }
+
+    public void handleSelectedCategory(MouseEvent mouseEvent) throws Exception {
+        if (allowAddingMoviesToCategories == false) {
+            storeCategory = (Category) tbwCategory.getSelectionModel().getSelectedItem();
+            if (storeCategory != null) {
+
+                int categoryId = storeCategory.getId(); //get the id of the selected playlist.
+                try {
+                    // here we fetch the songs from the database that is connected the the playlist with the id.
+                    List<Movie> movies = catMovieManager.getAllMoviesFromCategory(categoryId);
+                    ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movies);
+                    tbwMovie.setItems(movieObservableList); // set the items(songs) in the the view.
+                    tbwMovie.refresh();
+                } catch (Exception e) {
+                    displayError(e);
+                    e.printStackTrace();
+                }
+
+                tbwMovie.setItems(catMovieManager.getAllMoviesFromCategory(storeCategory.getId()));
+                tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
+                tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+                tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+                tbwMovie.refresh();
+            } else {
+                setup();
+            }
+        }
+        if (allowAddingMoviesToCategories == true) {
+            storeCategory = (Category) tbwCategory.getSelectionModel().getSelectedItem();
+            if (storeMovie != null && storeCategory != null) {
+                CatMovie newCatMovie = new CatMovie(storeMovie.getId(), storeCategory.getId());
+                CatMovieModel catMovieModel = new CatMovieModel();
+                try {
+
+                    catMovieModel.addMovieToCategory(newCatMovie);
+
+                } catch (Exception e) {
+                    displayError(e);
+                    e.printStackTrace();
+                } finally {
+                    setup();
+                    allowAddingMoviesToCategories = false;
+                }
+            } else {
+                System.out.println("stored category is empty same goes for stored movie");
+            }
+        }
     }
 }
