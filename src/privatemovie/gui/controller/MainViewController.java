@@ -9,11 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +20,7 @@ import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
 import privatemovie.bll.CatMovieManager;
+import privatemovie.dal.ICategoryDataAccess;
 import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
@@ -29,21 +28,16 @@ import privatemovie.gui.model.MovieModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainViewController extends BaseController implements Initializable {
     public TableColumn tbwMovieIMDBRating;
     public TableColumn tbwMovieTitle;
     public TableColumn tbwMoviePersonalRating;
-    public Button btnCreateCategory;
     public TableColumn tbwCategoryTitle;
-    public Button btnUnCatMovies;
     @FXML
-    private Button btnDeleteMovie;
-    @FXML
-    private Button btnUpdateMovie;
-    @FXML
-    private Button btnUploadMovie;
+    private Button btnDeleteMovie, btnDeleteCategory, btnUnCatMovies, btnUpdateMovie, btnUploadMovie, btnCreateCategory;
     @FXML
     private TableView tbwCategory;
     @FXML
@@ -54,44 +48,46 @@ public class MainViewController extends BaseController implements Initializable 
     private Movie storeMovie = new Movie();
     private Category storeCategory = new Category();
     private CatMovieManager catMovieManager= new CatMovieManager();
+    private boolean allowAddingMoviesToCategories = false;
+    private CatMovieModel catMovieModel;
+    private Movie selectedMovie;
+    private Category selectedCategory;
 
     public MainViewController() throws Exception {
         try {
             movieModel = new MovieModel();
             categoryModel = new CategoryModel();
+            catMovieModel = new CatMovieModel();
         } catch (Exception e) {
             displayError(e);
         }
     }
 
     private void handleBtns() {
-        btnDeleteMovie.setVisible(false);
-        btnUpdateMovie.setVisible(false);
-
+        btnDeleteMovie.setDisable(true);
+        btnUpdateMovie.setDisable(true);
+        btnDeleteCategory.setDisable(true);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        tbwCategory.setItems(categoryModel.getObservablePlaylist());
     }
 
     public void setup () throws Exception {
-        handleBtns();
-
+        //handleBtns();
         if (movieModel != null) {
             tbwMovie.setItems(movieModel.getListOfMovies());
             tbwCategory.setItems(categoryModel.showList());
 
         }
+        tbwCategory.setItems(categoryModel.getObservablePlaylist());
 
         tbwCategoryTitle.setCellValueFactory(new PropertyValueFactory<>("category"));
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
-
-
     }
-
 
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
@@ -104,8 +100,8 @@ public class MainViewController extends BaseController implements Initializable 
                 e.printStackTrace();
             }
         }
-        btnDeleteMovie.setVisible(false);
-        btnUpdateMovie.setVisible(false);
+        btnDeleteMovie.setDisable(false);
+        //btnUpdateMovie.setVisible(false);
 
        tbwMovie.setItems(movieModel.showList());
     }
@@ -128,10 +124,6 @@ public class MainViewController extends BaseController implements Initializable 
         PopupWindow.showAndWait();
 
         tbwMovie.setItems(movieModel.showList());
-
-        btnDeleteMovie.setVisible(false);
-        btnUpdateMovie.setVisible(false);
-
     }
 
     @FXML
@@ -225,6 +217,36 @@ public class MainViewController extends BaseController implements Initializable 
             tbwMovie.refresh();
         } else {
             setup();
+        }
+    }
+
+    public void deselectMovie(KeyEvent keyEvent) {
+        switch (keyEvent.getCode()) {
+            case ESCAPE:
+                tbwMovie.getSelectionModel().clearSelection();
+                break;
+        }
+    }
+
+    public void handleDeleteCategory(ActionEvent actionEvent) throws Exception {
+        try {
+            confirmationAlertCategory();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            throw new Exception("Could not delete category", exc);
+        }
+    }
+
+    public void confirmationAlertCategory() throws Exception {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("You are about to delete Category");
+        alert.setContentText("Are you sure you want to delete?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            
+        } else {
+
         }
     }
 }

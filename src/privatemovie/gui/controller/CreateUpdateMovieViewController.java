@@ -48,11 +48,12 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private ObservableList<Category> selectedCategories = FXCollections.observableArrayList();
     private Movie selectedMovie = new Movie();
     private MovieModel movieModel;
-    private CatMovieModel catMovieModel = new CatMovieModel();
-    private CategoryModel categoryModel = new CategoryModel();
     private Movie storedMovie = new Movie();
     private Category selectedCategory = new Category();
     private boolean updateCategories = false;
+    private CatMovieModel catMovieModel;
+    private CategoryModel categoryModel;
+    private MainViewController mainViewController;
 
     public CreateUpdateMovieViewController() throws Exception {
     }

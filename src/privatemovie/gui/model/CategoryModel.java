@@ -7,15 +7,26 @@ import privatemovie.be.Movie;
 import privatemovie.bll.CategoryManager;
 
 public class CategoryModel {
-    private final ObservableList<Category> listOfCategories = FXCollections.observableArrayList();
-    private final CategoryManager categoryManager = new CategoryManager();
+    private ObservableList<Category> listOfCategories;
+    private CategoryManager categoryManager = new CategoryManager();
 
     public CategoryModel() throws Exception {
+        categoryManager = new CategoryManager();
+        listOfCategories = FXCollections.observableArrayList();
         listOfCategories.addAll(categoryManager.getAllCategories());
     }
+
+    public ObservableList<Category> getObservablePlaylist() {
+        return listOfCategories;
+    }
+
     public void addCategory(Category category) throws Exception {
         Category c = categoryManager.addCategory(category);
         listOfCategories.add(c);
+    }
+
+    public void deleteCategory(Category deletedCategory) throws Exception {
+        categoryManager.deleteCategory(deletedCategory);
     }
 
     public ObservableList<Category> showList() throws Exception {
