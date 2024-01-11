@@ -2,7 +2,6 @@ package privatemovie.gui.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
 import privatemovie.gui.model.CatMovieModel;
@@ -19,11 +19,11 @@ import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class CreateUpdateMovieViewController extends BaseController implements Initializable {
+    public ComboBox menuSelectedCategories;
     @FXML
     private TextField txtMovieName;
     @FXML
@@ -44,11 +44,15 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private Button chooseFIle;
     @FXML
     private Button btnCancel;
-    private ObservableList<Category> categories = FXCollections.observableArrayList();
+    private ObservableList<Category> allCategories = FXCollections.observableArrayList();
+    private ObservableList<Category> selectedCategories = FXCollections.observableArrayList();
     private Movie selectedMovie = new Movie();
     private MovieModel movieModel;
-    private CatMovieModel catMovieModel;
-    private CategoryModel categoryModel;
+    private CatMovieModel catMovieModel = new CatMovieModel();
+    private CategoryModel categoryModel = new CategoryModel();
+    private Movie storedMovie = new Movie();
+    private Category selectedCategory = new Category();
+    private boolean updateCategories = false;
 
     public CreateUpdateMovieViewController() throws Exception {
     }
@@ -78,7 +82,16 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     }
 
     @FXML
-    private void handleUpdate(ActionEvent actionEvent) {
+    private void handleUpdate(ActionEvent actionEvent) throws Exception {
+        if (updateCategories == true) {
+            try {
+                CatMovie c = new CatMovie(selectedMovie.getId());
+                catMovieModel.removeMovieFromCategory(c);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            handleAddToCategories(selectedMovie);
+        }
         try {
             selectedMovie.setName(txtMovieName.getText());
             selectedMovie.setRating(Integer.parseInt(txtIMBDScore.getText()));
@@ -106,8 +119,20 @@ public class CreateUpdateMovieViewController extends BaseController implements I
             displayError(e);
             e.printStackTrace();
         } finally {
-
+            storedMovie = movie;
+            handleAddToCategories(storedMovie);
             btnCreate.getScene().getWindow().hide();
+        }
+    }
+
+    private void handleAddToCategories(Movie addMovieToCategory) {
+        try {
+            for (Category pCategory : selectedCategories){
+                CatMovie catMovie = new CatMovie(addMovieToCategory.getId(), pCategory.getId());
+                catMovieModel.addMovieToCategory(catMovie);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -119,12 +144,11 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         alert.showAndWait();
     }
 
+
     private void addToComboBox(){
         try {
-            categories = categoryModel.showList();
-            for (Category type : categories){
-                menuTotalCategories.getItems().add(type.getCategory());
-            }
+            allCategories = categoryModel.showList();
+            menuTotalCategories.setItems(allCategories);
             menuTotalCategories.getSelectionModel().selectFirst();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -147,13 +171,13 @@ public class CreateUpdateMovieViewController extends BaseController implements I
             if (!(txtCategory.getText().isEmpty())) {
                 Category c = new Category();
                 c.setCategories(txtCategory.getText().toString());
-                categories.add(c);
+                allCategories.add(c);
 
 
                 txtCategory.setText("");
 
 
-                menuTotalCategories.setItems(categories);
+                menuTotalCategories.setItems(allCategories);
             }
             // Looks TO SEE if the TXT SEARCH FIELD is EMPTY
             if (txtCategory.getText().isEmpty()) {
@@ -162,4 +186,10 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         }
     }
 
+    public void handleSelectCategory(ActionEvent actionEvent) {
+        updateCategories = true;
+
+        selectedCategories.add((Category) menuTotalCategories.getSelectionModel().getSelectedItem());
+        menuSelectedCategories.setItems(selectedCategories);
+    }
 }

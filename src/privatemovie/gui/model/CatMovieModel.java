@@ -11,12 +11,13 @@ import java.sql.SQLException;
 
 public class CatMovieModel {
     private ObservableList<Movie> listOfMovies;
+    private ObservableList<CatMovie> listOfCatMovies;
     private CatMovieManager catMovieManager;
 
     public CatMovieModel() throws Exception {
         catMovieManager = new CatMovieManager();
         listOfMovies = FXCollections.observableArrayList();
-        listOfMovies.addAll(catMovieManager.getAllMoviesFromCategory(8));
+        listOfCatMovies = FXCollections.observableArrayList();
     }
 
     public ObservableList<Movie> getListOfMovies() {
@@ -28,8 +29,17 @@ public class CatMovieModel {
         listOfMovies.addAll(catMovieManager.getAllMoviesFromCategory(categoryNumber));
         return listOfMovies;
     }
+    public ObservableList<CatMovie> showListCategory(int movieID) throws Exception {
+        listOfCatMovies.clear();
+        listOfCatMovies.addAll(catMovieManager.getAllCategoriesWithMovieID(movieID));
+        return listOfCatMovies;
+    }
 
     public void addMovieToCategory(CatMovie newCatMovie) throws SQLException {
         catMovieManager.addMovieToCategory(newCatMovie);
+    }
+
+    public void removeMovieFromCategory(CatMovie removeCatMovie) throws Exception {
+        catMovieManager.removeMovieFromCategory(removeCatMovie);
     }
 }

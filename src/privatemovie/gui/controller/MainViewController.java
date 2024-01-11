@@ -54,7 +54,6 @@ public class MainViewController extends BaseController implements Initializable 
     private Movie storeMovie = new Movie();
     private Category storeCategory = new Category();
     private CatMovieManager catMovieManager= new CatMovieManager();
-    private boolean allowAddingMoviesToCategories = false;
 
     public MainViewController() throws Exception {
         try {
@@ -167,7 +166,6 @@ public class MainViewController extends BaseController implements Initializable 
         if (selectedMovie != null) {
             btnDeleteMovie.setVisible(true);
             btnUpdateMovie.setVisible(true);
-            allowAddingMoviesToCategories = true;
         }
     }
 
@@ -207,50 +205,26 @@ public class MainViewController extends BaseController implements Initializable 
     }
 
     public void handleSelectedCategory(MouseEvent mouseEvent) throws Exception {
-        if (allowAddingMoviesToCategories == false) {
-            storeCategory = (Category) tbwCategory.getSelectionModel().getSelectedItem();
-            if (storeCategory != null) {
-
-                int categoryId = storeCategory.getId(); //get the id of the selected playlist.
-                try {
-                    // here we fetch the songs from the database that is connected the the playlist with the id.
-                    List<Movie> movies = catMovieManager.getAllMoviesFromCategory(categoryId);
-                    ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movies);
-                    tbwMovie.setItems(movieObservableList); // set the items(songs) in the the view.
-                    tbwMovie.refresh();
-                } catch (Exception e) {
-                    displayError(e);
-                    e.printStackTrace();
-                }
-
-                tbwMovie.setItems(catMovieManager.getAllMoviesFromCategory(storeCategory.getId()));
-                tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
-                tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
-                tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+        storeCategory = (Category) tbwCategory.getSelectionModel().getSelectedItem();
+        if (storeCategory != null) {
+            int categoryId = storeCategory.getId(); //get the id of the selected playlist.
+            try {
+                // here we fetch the songs from the database that is connected the the playlist with the id.
+                List<Movie> movies = catMovieManager.getAllMoviesFromCategory(categoryId);
+                ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movies);
+                tbwMovie.setItems(movieObservableList); // set the items(songs) in the the view.
                 tbwMovie.refresh();
-            } else {
-                setup();
+            } catch (Exception e) {
+                displayError(e);
+                e.printStackTrace();
             }
-        }
-        if (allowAddingMoviesToCategories == true) {
-            storeCategory = (Category) tbwCategory.getSelectionModel().getSelectedItem();
-            if (storeMovie != null && storeCategory != null) {
-                CatMovie newCatMovie = new CatMovie(storeMovie.getId(), storeCategory.getId());
-                CatMovieModel catMovieModel = new CatMovieModel();
-                try {
-
-                    catMovieModel.addMovieToCategory(newCatMovie);
-
-                } catch (Exception e) {
-                    displayError(e);
-                    e.printStackTrace();
-                } finally {
-                    setup();
-                    allowAddingMoviesToCategories = false;
-                }
-            } else {
-                System.out.println("stored category is empty same goes for stored movie");
-            }
+            tbwMovie.setItems(catMovieManager.getAllMoviesFromCategory(storeCategory.getId()));
+            tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+            tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+            tbwMovie.refresh();
+        } else {
+            setup();
         }
     }
 }

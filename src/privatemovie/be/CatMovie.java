@@ -11,6 +11,10 @@ public class CatMovie {
         this.categoryID = categoryID;
     }
 
+    public CatMovie(int movieID) {
+        this.movieID = movieID;
+    }
+
     public int getCategoryID() {
         return categoryID;
     }

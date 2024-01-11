@@ -19,8 +19,15 @@ public class CatMovieManager {
     public ObservableList getAllMoviesFromCategory(int CategoryId) throws Exception {
         return (ObservableList) catMovieDAO.getAllMoviesFromCategory(CategoryId);
     }
+    public ObservableList getAllCategoriesWithMovieID(int movieID) throws Exception {
+        return (ObservableList) catMovieDAO.getAllCategoriesWithMovieID(movieID);
+    }
 
     public void addMovieToCategory(CatMovie newCatMovie) throws SQLException {
         catMovieDAO.addMovieToCategory(newCatMovie);
+    }
+
+    public void removeMovieFromCategory(CatMovie removeCatMovie) throws Exception {
+        catMovieDAO.removeMovieFromCategory(removeCatMovie);
     }
 }

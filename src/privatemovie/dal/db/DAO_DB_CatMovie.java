@@ -50,6 +50,35 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
         }
     }
 
+    public List<CatMovie> getAllCategoriesWithMovieID(int movieID) throws Exception {
+        ObservableList<CatMovie> allCategories = FXCollections.observableArrayList();
+
+        try (Connection conn = databaseConnector.getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            String sql = "SELECT * FROM FuckNetflix.dbo.CatMovie WHERE MovieID = (?)";
+
+            ResultSet rs = stmt.executeQuery(sql);
+
+            // Loop through rows from the database result set
+            while (rs.next()) {
+
+                //Map DB row to Song object
+                int id = rs.getInt("MovieID");
+
+                CatMovie catMovie = new CatMovie(id);
+
+                allCategories.add(catMovie);
+            }
+
+            return allCategories;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new Exception("Could not get Movies from Category from the database", ex);
+        }
+    }
+
     public CatMovie addMovieToCategory(CatMovie newCatMovie) throws SQLException {
         String sql = "INSERT INTO FuckNetflix.dbo.CatMovie (MovieID, CategoryID) VALUES (?,?);";
 
@@ -68,5 +97,36 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
             return addMovieToCategory;
 
         }
+    }
+
+    @Override
+    public CatMovie removeMovieFromCategory(CatMovie removeCatMovie) throws Exception {
+        // SQL statement
+        String sqlCatMovieSQL = "delete from FuckNetflix.dbo.CatMovie where MovieID = ?";
+
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement sqlCatMovieSQLstmt = conn.prepareStatement(sqlCatMovieSQL)) {
+            // Start a transaction
+            conn.setAutoCommit(false);
+
+            try {
+                // Delete the song itself
+                sqlCatMovieSQLstmt.setInt(1, removeCatMovie.getMovieID());
+                sqlCatMovieSQLstmt.executeUpdate();
+                // Commit the transaction if everything is successful
+                conn.commit();
+            } catch (SQLException ex) {
+                // Rollback the transaction if an error occurs
+                conn.rollback();
+                throw new Exception("Could not delete song", ex);
+            } finally {
+                // Reset auto-commit to true
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new Exception("Could not delete song", ex);
+        }
+        return removeCatMovie;
     }
 }

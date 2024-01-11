@@ -11,4 +11,6 @@ public interface ICatMovieDataAccess {
     public List<Movie> getAllMoviesFromCategory(int categoryId) throws Exception;
 
     CatMovie addMovieToCategory(CatMovie newCatMovie) throws SQLException;
+
+    CatMovie removeMovieFromCategory(CatMovie removeCatMovie) throws Exception;
 }
