@@ -59,7 +59,7 @@ public class Movie {
     }
 
     public String getMovieTitle() {
-        return null;
+        return name;
     }
 
     public String getGenreType() {

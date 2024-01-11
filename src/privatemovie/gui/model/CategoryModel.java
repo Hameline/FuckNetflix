@@ -7,8 +7,8 @@ import privatemovie.be.Movie;
 import privatemovie.bll.CategoryManager;
 
 public class CategoryModel {
-    private ObservableList<Category> listOfCategories = FXCollections.observableArrayList();
-    private CategoryManager categoryManager = new CategoryManager();
+    private final ObservableList<Category> listOfCategories = FXCollections.observableArrayList();
+    private final CategoryManager categoryManager = new CategoryManager();
 
     public CategoryModel() throws Exception {
         listOfCategories.addAll(categoryManager.getAllCategories());
