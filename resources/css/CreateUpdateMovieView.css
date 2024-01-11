@@ -1,0 +1,29 @@
+#background {
+    -fx-background-color: #f0f0f0; /* Background color */
+    -fx-border-color: #d0d0d0; /* Border color */
+    -fx-border-width: 2px; /* Border width */
+    -fx-border-radius: 5px; /* Border radius */
+}
+
+#text {
+    -fx-text-fill: #333; /* Text color */
+}
+
+#field {
+    -fx-background-color: #e0e0e0; /* Field background color */
+    -fx-border-color: #d0d0d0; /* Border color */
+    -fx-border-width: 1px; /* Border width */
+    -fx-border-radius: 3px; /* Border radius */
+}
+
+#btnUpdate, #btnCreate, #chooseFIle, #btnCancel {
+    -fx-background-color: #4caf50; /* Button background color */
+    -fx-text-fill: #fff; /* Button text color */
+    -fx-border-color: #45a049; /* Border color */
+    -fx-border-width: 1px; /* Border width */
+    -fx-border-radius: 3px; /* Border radius */
+}
+
+#btnUpdate:hover, #btnCreate:hover, #chooseFIle:hover, #btnCancel:hover {
+    -fx-background-color: #45a049; /* Button background color on hover */
+}
