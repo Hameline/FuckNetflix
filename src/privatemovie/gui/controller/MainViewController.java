@@ -48,10 +48,8 @@ public class MainViewController extends BaseController implements Initializable 
     private Movie storeMovie = new Movie();
     private Category storeCategory = new Category();
     private CatMovieManager catMovieManager= new CatMovieManager();
-    private boolean allowAddingMoviesToCategories = false;
     private CatMovieModel catMovieModel;
-    private Movie selectedMovie;
-    private Category selectedCategory;
+    private boolean deleteCategory = false;
 
     public MainViewController() throws Exception {
         try {
@@ -168,24 +166,6 @@ public class MainViewController extends BaseController implements Initializable 
         alert.showAndWait();
     }
 
-    public void handleCreateCategory(ActionEvent actionEvent) throws Exception {
-        Stage stage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateCategory.fxml"));
-        Parent popupWindow = loader.load();
-
-        CreateCategoryViewController controller = loader.getController();
-
-        Stage PopupWindow = new Stage();
-        PopupWindow.setTitle("Create Category");
-        PopupWindow.initModality(Modality.APPLICATION_MODAL);
-        PopupWindow.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
-
-        PopupWindow.setScene(new Scene(popupWindow));
-        PopupWindow.showAndWait();
-
-        tbwCategory.setItems(categoryModel.showList());
-    }
-
     public void handleUnCatMovies(ActionEvent actionEvent) {
         if (movieModel != null) {
             tbwMovie.setItems(movieModel.getListOfMovies());
@@ -215,6 +195,9 @@ public class MainViewController extends BaseController implements Initializable 
             tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
             tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
             tbwMovie.refresh();
+
+            btnCreateCategory.setText("Delete Category");
+            deleteCategory = true;
         } else {
             setup();
         }
@@ -228,15 +211,6 @@ public class MainViewController extends BaseController implements Initializable 
         }
     }
 
-    public void handleDeleteCategory(ActionEvent actionEvent) throws Exception {
-        try {
-            confirmationAlertCategory();
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            throw new Exception("Could not delete category", exc);
-        }
-    }
-
     public void confirmationAlertCategory() throws Exception {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -244,9 +218,37 @@ public class MainViewController extends BaseController implements Initializable 
         alert.setContentText("Are you sure you want to delete?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            
+
+            categoryModel.deleteCategory(storeCategory);
+            deleteCategory = false;
+            btnCreateCategory.setText("Create Category");
+
         } else {
 
+        }
+    }
+
+    public void handleCreateCategory(ActionEvent actionEvent) throws Exception {
+        if (deleteCategory == false) {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreateCategory.fxml"));
+            Parent popupWindow = loader.load();
+
+            CreateCategoryViewController controller = loader.getController();
+
+            Stage PopupWindow = new Stage();
+            PopupWindow.setTitle("Create Category");
+            PopupWindow.initModality(Modality.APPLICATION_MODAL);
+            PopupWindow.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
+
+            PopupWindow.setScene(new Scene(popupWindow));
+            PopupWindow.showAndWait();
+
+            tbwCategory.setItems(categoryModel.showList());
+        }
+        if (deleteCategory == true) {
+            confirmationAlertCategory();
+            tbwCategory.setItems(categoryModel.showList());
         }
     }
 }

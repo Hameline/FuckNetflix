@@ -81,13 +81,13 @@ public class DAO_DB_Category implements ICategoryDataAccess {
     public void deleteCategory(Category deleteCategory) throws Exception {
         try (Connection conn = databaseConnector.getConnection()) {
 
-            String deleteCatMovieSql = "DELETE FROM FuckNetflix.dbo.CatMovie WHERE CategoryId = ?";
+            String deleteCatMovieSql = "DELETE FROM FuckNetflix.dbo.CatMovie WHERE CategoryID = ?";
             try (PreparedStatement catMovieStmt = conn.prepareStatement(deleteCatMovieSql)) {
                 catMovieStmt.setInt(1, deleteCategory.getId());
                 catMovieStmt.executeUpdate();
             }
 
-            String deleteCategorySql = "DELETE FROM FuckNetflix.dbo.Category WHERE Id = ?";
+            String deleteCategorySql = "DELETE FROM FuckNetflix.dbo.Category WHERE CategoryID = ?";
             try (PreparedStatement categoryStmt = conn.prepareStatement(deleteCategorySql)) {
                 categoryStmt.setInt(1, deleteCategory.getId());
                 categoryStmt.executeUpdate();

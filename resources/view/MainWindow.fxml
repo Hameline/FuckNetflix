@@ -6,20 +6,26 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="760.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
+<VBox prefHeight="760.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
    <children>
       <HBox>
          <children>
-            <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" prefHeight="41.0" prefWidth="153.0" text="Create Category" />
-            <Label prefHeight="41.0" prefWidth="133.0" text="Private Movie Collection">
+            <Label prefHeight="37.0" prefWidth="212.0" text="Private Movie Collection">
                <HBox.margin>
                   <Insets left="5.0" />
                </HBox.margin>
             </Label>
-            <ButtonBar prefHeight="41.0" prefWidth="685.0">
+            <TextArea fx:id="txtFieldSearch" onKeyPressed="#handleSearch" prefHeight="38.0" prefWidth="791.0" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" prefHeight="41.0" prefWidth="153.0" text="Create Category" />
+            <ButtonBar prefHeight="25.0" prefWidth="830.0">
               <buttons>
                   <Button mnemonicParsing="false" text="Add to category" />
                 <Button fx:id="btnDeleteMovie" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete Movie" />
@@ -40,12 +46,7 @@
                 <TableColumn fx:id="tbwCategoryTitle" prefWidth="155.0" text="Category" />
               </columns>
             </TableView>
-            <Button fx:id="btnDeleteCategory" mnemonicParsing="false" onAction="#handleDeleteCategory" text="Delete Category">
-               <HBox.margin>
-                  <Insets top="100.0" />
-               </HBox.margin>
-            </Button>
-            <TableView fx:id="tbwMovie" onKeyPressed="#deselectMovie" onMouseClicked="#handleSelectedMovie" prefHeight="719.0" prefWidth="724.0">
+            <TableView fx:id="tbwMovie" onKeyPressed="#deselectMovie" onMouseClicked="#handleSelectedMovie" prefHeight="719.0" prefWidth="834.0">
               <columns>
                 <TableColumn fx:id="tbwMovieIMDBRating" prefWidth="78.0" text="IMDB Rating" />
                 <TableColumn fx:id="tbwMovieTitle" prefWidth="445.0" text="Movie Title" />
