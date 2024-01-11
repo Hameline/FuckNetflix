@@ -1,5 +1,7 @@
 package privatemovie.be;
 
+import javafx.scene.text.Text;
+
 public class CatMovie {
     private int movieID, categoryID;
 
@@ -19,7 +21,7 @@ public class CatMovie {
         return categoryID;
     }
 
-    public void setPCategoryID(int id) {
+    public void setCategoryID(int id) {
         this.categoryID = id;
     }
 

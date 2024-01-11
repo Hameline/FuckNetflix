@@ -15,13 +15,11 @@ import privatemovie.gui.model.CategoryModel;
 public class CreateCategoryViewController extends BaseController{
     public TextField txtCategoryName;
     public ComboBox menuTotalCategories;
-    public Button btnUpdate;
     public Button btnCreate;
     public Button btnCancel;
     public Button btnDelete;
 
     private ObservableList<Category> categories = FXCollections.observableArrayList();
-    private Category category = new Category();
     private Category selectedCategory = new Category();
     private CategoryModel categoryModel = new CategoryModel();
 
@@ -35,9 +33,6 @@ public class CreateCategoryViewController extends BaseController{
 
     public void handleSelectedCategory(ActionEvent actionEvent) {
         selectedCategory = (Category) menuTotalCategories.getSelectionModel().getSelectedItem();
-    }
-
-    public void handleUpdate(ActionEvent actionEvent) {
     }
 
     public void handleCreate(ActionEvent actionEvent) {

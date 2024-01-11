@@ -3,29 +3,35 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="760.0" prefWidth="948.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
+<VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="760.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="privatemovie.gui.controller.MainViewController">
    <children>
-      <HBox>
+      <HBox alignment="CENTER" prefHeight="3.0" prefWidth="984.0">
          <children>
-            <Label prefHeight="37.0" prefWidth="212.0" text="Private Movie Collection">
-               <HBox.margin>
+            <Label prefHeight="25.0" prefWidth="206.0" text="Private Movie Collection">
+               <HBox.margin>    
                   <Insets left="5.0" />
                </HBox.margin>
             </Label>
-            <TextArea fx:id="txtFieldSearch" onKeyPressed="#handleSearch" prefHeight="38.0" prefWidth="791.0" />
+            <ComboBox fx:id="menuSearchCategories" onAction="#handleSearchCategories" prefHeight="20.0" prefWidth="150.0" promptText="Filter Category">
+               <HBox.margin>
+                  <Insets right="11.0" />
+               </HBox.margin>
+            </ComboBox>
+            <TextField fx:id="txtFieldSearch" onKeyPressed="#handleSearch" prefHeight="25.0" prefWidth="626.0" promptText="🔍 Search after a Song, Genre or Artist" />
          </children>
       </HBox>
-      <HBox>
+      <HBox alignment="CENTER">
          <children>
             <Button fx:id="btnCreateCategory" mnemonicParsing="false" onAction="#handleCreateCategory" prefHeight="41.0" prefWidth="153.0" text="Create Category" />
-            <ButtonBar prefHeight="25.0" prefWidth="830.0">
+            <ButtonBar prefHeight="46.0" prefWidth="828.0">
               <buttons>
                   <Button mnemonicParsing="false" text="Add to category" />
                 <Button fx:id="btnDeleteMovie" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete Movie" />

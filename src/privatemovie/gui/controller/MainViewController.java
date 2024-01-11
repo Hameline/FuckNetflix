@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -36,13 +37,15 @@ public class MainViewController extends BaseController implements Initializable 
     public TableColumn tbwMovieTitle;
     public TableColumn tbwMoviePersonalRating;
     public TableColumn tbwCategoryTitle;
+    public TextField txtFieldSearch;
+    public ComboBox menuSearchCategories;
     @FXML
-    private Button btnDeleteMovie, btnDeleteCategory, btnUnCatMovies, btnUpdateMovie, btnUploadMovie, btnCreateCategory;
+    private Button btnDeleteMovie, btnUpdateMovie, btnCreateCategory;
+    private String errorText;
     @FXML
     private TableView tbwCategory;
     @FXML
     private TableView tbwMovie;
-    private String errorText;
     private MovieModel movieModel;
     private CategoryModel categoryModel;
     private Movie storeMovie = new Movie();
@@ -50,6 +53,7 @@ public class MainViewController extends BaseController implements Initializable 
     private CatMovieManager catMovieManager= new CatMovieManager();
     private CatMovieModel catMovieModel;
     private boolean deleteCategory = false;
+    private ObservableList<CatMovie> searchedCategoriesList = FXCollections.observableArrayList();
 
     public MainViewController() throws Exception {
         try {
@@ -64,7 +68,6 @@ public class MainViewController extends BaseController implements Initializable 
     private void handleBtns() {
         btnDeleteMovie.setDisable(true);
         btnUpdateMovie.setDisable(true);
-        btnDeleteCategory.setDisable(true);
     }
 
     @Override
@@ -77,7 +80,6 @@ public class MainViewController extends BaseController implements Initializable 
         if (movieModel != null) {
             tbwMovie.setItems(movieModel.getListOfMovies());
             tbwCategory.setItems(categoryModel.showList());
-
         }
         tbwCategory.setItems(categoryModel.getObservablePlaylist());
 
@@ -85,6 +87,9 @@ public class MainViewController extends BaseController implements Initializable 
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+
+
+        menuSearchCategories.setItems(categoryModel.showList());
     }
 
     @FXML
@@ -250,5 +255,24 @@ public class MainViewController extends BaseController implements Initializable 
             confirmationAlertCategory();
             tbwCategory.setItems(categoryModel.showList());
         }
+    }
+
+    public void handleSearch(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            if (!(txtFieldSearch.getText().isEmpty())) {
+
+            }
+            // Looks TO SEE if the TXT SEARCH FIELD is EMPTY
+            if (txtFieldSearch.getText().isEmpty()) {
+                // to ensure nothing happens if the Field is empty
+            }
+        }
+    }
+
+    public void handleSearchCategories(ActionEvent actionEvent) throws Exception {
+        CatMovie catMovie = new CatMovie();
+        Category category = (Category) menuSearchCategories.getSelectionModel().getSelectedItem();
+        catMovie.setCategoryID(category.getId());
+        searchedCategoriesList.add(catMovie);
     }
 }
