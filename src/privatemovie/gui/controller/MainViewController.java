@@ -37,8 +37,10 @@ public class MainViewController extends BaseController implements Initializable 
     public TableColumn tbwMovieTitle;
     public TableColumn tbwMoviePersonalRating;
     public TableColumn tbwCategoryTitle;
-    public TextField txtFieldSearch;
     public ComboBox menuSearchCategories;
+    public Button searchButton;
+    @FXML
+    private TextField txtFieldSearch;
     @FXML
     private Button btnDeleteMovie, btnUpdateMovie, btnCreateCategory;
     private String errorText;
@@ -72,7 +74,7 @@ public class MainViewController extends BaseController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tbwCategory.setItems(categoryModel.getObservablePlaylist());
+        tbwCategory.setItems(categoryModel.getListOfCategories());
     }
 
     public void setup () throws Exception {
@@ -81,7 +83,7 @@ public class MainViewController extends BaseController implements Initializable 
             tbwMovie.setItems(movieModel.getListOfMovies());
             tbwCategory.setItems(categoryModel.showList());
         }
-        tbwCategory.setItems(categoryModel.getObservablePlaylist());
+        tbwCategory.setItems(categoryModel.getListOfCategories());
 
         tbwCategoryTitle.setCellValueFactory(new PropertyValueFactory<>("category"));
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -258,15 +260,21 @@ public class MainViewController extends BaseController implements Initializable 
     }
 
     public void handleSearch(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.ENTER) {
-            if (!(txtFieldSearch.getText().isEmpty())) {
-
-            }
-            // Looks TO SEE if the TXT SEARCH FIELD is EMPTY
-            if (txtFieldSearch.getText().isEmpty()) {
-                // to ensure nothing happens if the Field is empty
-            }
+        if (!(txtFieldSearch.getText().isEmpty())) {
+            String search = txtFieldSearch.getText().toLowerCase();
+            tbwMovie.setItems(movieModel.searchedMovie(search));
         }
+        if (!(txtFieldSearch.getText().isEmpty())) {
+            String search = txtFieldSearch.getText().toLowerCase();
+            tbwCategory.setItems(categoryModel.searchedCategory(search));
+        }
+        if (txtFieldSearch.getText().isEmpty()) {
+            tbwMovie.setItems(movieModel.getListOfMovies());
+            tbwCategory.setItems(categoryModel.getListOfCategories());
+        }
+
+        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+        storeMovie = selectedMovie;
     }
 
     public void handleSearchCategories(ActionEvent actionEvent) throws Exception {

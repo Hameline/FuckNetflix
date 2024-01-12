@@ -17,9 +17,22 @@ public class MovieModel {
 
         listOfMovies = FXCollections.observableArrayList();
         listOfMovies.addAll(movieManager.getAllMovies());
-
     }
 
+    public ObservableList<Movie> searchedMovie(String search) {
+        ObservableList<Movie> searchedMovie = FXCollections.observableArrayList();
+
+        for (Movie movie : listOfMovies) {
+            String ownRating = String.valueOf(movie.getOwnrating());
+            String imdbRating = String.valueOf(movie.getRating());
+
+            if (movie.getName().toLowerCase().contains(search) || ownRating.toLowerCase().contains(search) ||
+                    imdbRating.toLowerCase().contains(search)) {
+                searchedMovie.add(movie);
+            }
+        }
+        return searchedMovie;
+    }
 
     public ObservableList<Movie> getListOfMovies() {
         return listOfMovies;

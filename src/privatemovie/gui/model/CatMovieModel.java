@@ -20,8 +20,22 @@ public class CatMovieModel {
         listOfCatMovies = FXCollections.observableArrayList();
     }
 
+    /*public ObservableList<CatMovie> searchedCatMovie(String search) {
+        ObservableList<CatMovie> searchedCatMovie = FXCollections.observableArrayList();
+        for (CatMovie catMovie : listOfMovies) {
+            if (catMovie.getName().toLowerCase().contains(search)) {
+                searchedCatMovie.add(catMovie);
+            }
+        }
+        return searchedCatMovie;
+    }*/
+
     public ObservableList<Movie> getListOfMovies() {
         return listOfMovies;
+    }
+
+    public ObservableList<CatMovie> getListOfCatMovies() {
+        return listOfCatMovies;
     }
 
     public ObservableList<Movie> showList(int categoryNumber) throws Exception {

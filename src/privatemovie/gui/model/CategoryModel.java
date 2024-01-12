@@ -16,7 +16,17 @@ public class CategoryModel {
         listOfCategories.addAll(categoryManager.getAllCategories());
     }
 
-    public ObservableList<Category> getObservablePlaylist() {
+    public ObservableList<Category> searchedCategory(String search) {
+        ObservableList<Category> searchedCategory = FXCollections.observableArrayList();
+        for (Category category : listOfCategories) {
+            if (category.getCategory().toLowerCase().contains(search)) {
+                searchedCategory.add(category);
+            }
+        }
+        return searchedCategory;
+    }
+
+    public ObservableList<Category> getListOfCategories() {
         return listOfCategories;
     }
 
