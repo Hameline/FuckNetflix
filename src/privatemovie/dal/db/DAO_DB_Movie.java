@@ -31,8 +31,9 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 String name = rs.getString("MovieName");
                 int imbdRating = rs.getInt("IMDBRating");
                 int personalRating = rs.getInt("PersonalRating");
+                String filePath = rs.getString("FilePath");
 
-                Movie movie = new Movie(id, name, imbdRating, personalRating);
+                Movie movie = new Movie(id, name, imbdRating, personalRating, filePath);
                 allMovies.add(movie);
             }
             return allMovies;

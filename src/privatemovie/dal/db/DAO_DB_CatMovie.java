@@ -36,8 +36,9 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
                 String name = rs.getString("MovieName");
                 int rating = rs.getInt("IMDBRating");
                 int ownrating = rs.getInt("PersonalRating");
+                String filePath = rs.getString("FilePath");
 
-                Movie movie = new Movie(id, name, rating, ownrating);
+                Movie movie = new Movie(id, name, rating, ownrating, filePath);
 
                 allMovies.add(movie);
             }

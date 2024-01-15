@@ -11,6 +11,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
@@ -18,6 +20,7 @@ import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -56,6 +59,13 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private MainViewController mainViewController;
 
     public CreateUpdateMovieViewController() throws Exception {
+        try {
+            movieModel = new MovieModel();
+            categoryModel = new CategoryModel();
+            catMovieModel = new CatMovieModel();
+        } catch (Exception e) {
+            displayError(e);
+        }
     }
 
     public void setMovie(Movie movie) {
@@ -158,6 +168,10 @@ public class CreateUpdateMovieViewController extends BaseController implements I
 
     @FXML
     private void handleChooseFile(ActionEvent actionEvent) {
+        FileChooser fc = new FileChooser();
+        Stage stage = (Stage) btnCancel.getScene().getWindow();
+        File f = fc.showOpenDialog(stage);
+        txtFilePath.setText(f.getPath());
     }
 
     @FXML
