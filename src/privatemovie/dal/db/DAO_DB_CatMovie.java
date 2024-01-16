@@ -7,6 +7,7 @@ import privatemovie.be.Movie;
 import privatemovie.dal.ICatMovieDataAccess;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DAO_DB_CatMovie implements ICatMovieDataAccess {
@@ -37,8 +38,9 @@ public class DAO_DB_CatMovie implements ICatMovieDataAccess {
                 int rating = rs.getInt("IMDBRating");
                 int ownrating = rs.getInt("PersonalRating");
                 String filePath = rs.getString("FilePath");
+                Date localDate = rs.getDate("LastOpenDate");
 
-                Movie movie = new Movie(id, name, rating, ownrating, filePath);
+                Movie movie = new Movie(id, name, rating, ownrating, filePath, localDate);
 
                 allMovies.add(movie);
             }

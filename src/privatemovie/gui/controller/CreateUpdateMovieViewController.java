@@ -23,6 +23,9 @@ import privatemovie.gui.model.MovieModel;
 import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class CreateUpdateMovieViewController extends BaseController implements Initializable {
@@ -121,7 +124,8 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
         int rating = Integer.parseInt(txtIMBDScore.getText());
-        Movie movie = new Movie(-1, txtMovieName.getText(), rating, txtFilePath.getText());
+        Date localDate = Date.from(Instant.now());
+        Movie movie = new Movie(-1, txtMovieName.getText(), rating, txtFilePath.getText(), localDate);
 
         try {
             movieModel.addMovie(movie);

@@ -25,7 +25,8 @@
                   <Insets right="11.0" />
                </HBox.margin>
             </ComboBox>
-            <TextField fx:id="txtFieldSearch" onKeyPressed="#handleSearch" prefHeight="25.0" prefWidth="626.0" promptText="🔍 Search after a Song, Genre or Artist" />
+            <TextField fx:id="txtMinimunRating" promptText="Minimun Rating" />
+            <TextField fx:id="txtFieldSearch" onKeyPressed="#handleSearch" prefHeight="25.0" prefWidth="480.0" promptText="🔍 Search after a Song, Genre or Artist" />
          </children>
       </HBox>
       <HBox alignment="CENTER">

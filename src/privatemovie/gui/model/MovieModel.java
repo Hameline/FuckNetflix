@@ -7,6 +7,7 @@ import privatemovie.be.Movie;
 import privatemovie.bll.CatMovieManager;
 import privatemovie.bll.MovieManager;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class MovieModel {
@@ -14,6 +15,7 @@ public class MovieModel {
 
     private MovieManager movieManager;
     private Movie selectedMovie;
+    private int minimunRating = 0;
 
     public MovieModel() throws Exception {
         movieManager = new MovieManager();
@@ -27,16 +29,53 @@ public class MovieModel {
         this.listOfMovies = listOfMovies;
     }
 
+    public void setMinimunRating(int number) {
+        minimunRating = number;
+    }
+
+    public ObservableList<Movie> shouldDeleteOldMovies() {
+    ObservableList<Movie> deleteMovies = FXCollections.observableArrayList();
+
+        for (Movie m : listOfMovies) {
+            boolean b = m.getOwnrating() < 6 && m.getLastOpenedDate().isBefore(LocalDate.now().minusYears(2));
+            if (b == true) {
+                deleteMovies.add(m);
+            }
+        }
+
+        return listOfMovies = deleteMovies;
+    }
+
     public ObservableList<Movie> searchedMovie(String search ) {
         ObservableList<Movie> searchedMovie = FXCollections.observableArrayList();
 
         for (Movie movie : listOfMovies) {
-            String ownRating = String.valueOf(movie.getOwnrating());
-            String imdbRating = String.valueOf(movie.getRating());
+            if (minimunRating != 0) {
+                String ownRating = String.valueOf(movie.getOwnrating());
+                String imdbRating = String.valueOf(movie.getRating());
+                boolean allowOwnRating = false;
+                boolean allowImdbRating = false;
+                if (movie.getOwnrating() >= minimunRating) {
+                    allowOwnRating = true;
+                }
+                if (movie.getRating() >= minimunRating) {
+                    allowImdbRating = true;
+                }
+                if (allowOwnRating == true || allowImdbRating == true) {
+                    if (movie.getName().toLowerCase().contains(search) || ownRating.toLowerCase().contains(search) ||
+                            imdbRating.toLowerCase().contains(search)) {
+                        searchedMovie.add(movie);
+                    }
+                }
+            }
+            if (minimunRating == 0) {
+                String ownRating = String.valueOf(movie.getOwnrating());
+                String imdbRating = String.valueOf(movie.getRating());
 
-            if (movie.getName().toLowerCase().contains(search) || ownRating.toLowerCase().contains(search) ||
-                    imdbRating.toLowerCase().contains(search)) {
-                searchedMovie.add(movie);
+                if (movie.getName().toLowerCase().contains(search) || ownRating.toLowerCase().contains(search) ||
+                        imdbRating.toLowerCase().contains(search)) {
+                    searchedMovie.add(movie);
+                }
             }
         }
         return searchedMovie;
