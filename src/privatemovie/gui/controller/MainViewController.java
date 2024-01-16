@@ -42,7 +42,7 @@ public class MainViewController extends BaseController implements Initializable 
     @FXML
     private TableView tbwCategory;
     @FXML
-    private TableView tbwMovie;
+    protected TableView tbwMovie;
     private MovieModel movieModel;
     private CategoryModel categoryModel;
     private Movie storeMovie = new Movie();
@@ -89,8 +89,17 @@ public class MainViewController extends BaseController implements Initializable 
 
         menuSearchCategories.setItems(categoryModel.showList());
         resetCreateCategory();
-    }
 
+        tbwMovie.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getClickCount() == 2 && tbwMovie.getSelectionModel().getSelectedItem() != null) {
+                try {
+                    openMediaView(mouseEvent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+   }
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
         if (storeMovie != null) {
@@ -166,7 +175,7 @@ public class MainViewController extends BaseController implements Initializable 
         resetCreateCategory();
     }
 
-    private void displayError(Throwable t) {
+    protected void displayError(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(errorText);
         alert.setHeaderText(t.getMessage());
@@ -325,5 +334,21 @@ public class MainViewController extends BaseController implements Initializable 
 
         resetCreateCategory();
 
+    }
+
+    public void openMediaView(MouseEvent mouseEvent) throws Exception{
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MediaView.fxml"));
+        Parent mediaViewRoot = loader.load();
+
+        MediaViewController controller = loader.getController();
+
+        Stage PopupWindow = new Stage();
+        PopupWindow.setTitle("Media View");
+        PopupWindow.initModality(Modality.APPLICATION_MODAL);
+        PopupWindow.initOwner(((Node) mouseEvent.getSource()).getScene().getWindow());
+
+        PopupWindow.setScene(new Scene(mediaViewRoot));
+        PopupWindow.showAndWait();
     }
 }

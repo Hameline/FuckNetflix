@@ -8,12 +8,14 @@ public class Movie {
     private String name;
     private int rating;
     private int ownrating;
+    private String filePath;
 
-    public Movie(int id, String name, int rating, int ownrating) {
+    public Movie(int id, String name, int rating, int ownrating, String filePath) {
         this.id = id;
         this.name = name;
         this.rating = rating;
         this.ownrating = ownrating;
+        this.filePath = filePath;
     }
 
     public Movie(int id, String name, int rating) {
@@ -88,6 +90,14 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
 
