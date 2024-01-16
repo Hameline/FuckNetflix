@@ -1,13 +1,17 @@
 package privatemovie.gui.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import privatemovie.be.Movie;
 import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
@@ -18,10 +22,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MediaViewController<moviePath> extends BaseController implements Initializable {
+
     private CategoryModel categoryModel;
     private CatMovieModel catMovieModel;
     private MovieModel movieModel;
     private MainViewController mainViewController;
+    @FXML
+    private MediaView movieView;
     @FXML
     private ProgressBar progressBar;
     @FXML
@@ -31,6 +38,8 @@ public class MediaViewController<moviePath> extends BaseController implements In
     private MediaPlayer mediaPlayer;
     private int switchFromPlayAndPause = 1;
     private Movie selectedMovie;
+    private TableView<Movie> tbwMovie;
+
 
     public MediaViewController() throws Exception {
         try {
@@ -43,12 +52,28 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
     }
 
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
 
     @Override
     public void setup() throws Exception {
+        if (movieModel != null) {
+            mainViewController.tbwMovie.setItems(movieModel.getListOfMovies());
+        }
+
+        volumeSlider.setMin(0);
+        volumeSlider.setMax(100);
+
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.setVolume(newValue.doubleValue() / 100.0);
+            }
+        });
     }
 
     @FXML
@@ -65,6 +90,9 @@ public class MediaViewController<moviePath> extends BaseController implements In
     }
 
     public void playMovie(String moviePath) throws  Exception {
+        if (moviePath == null) {
+            throw new IllegalArgumentException("moviePath cannot be null");
+        }
         File file = new File(moviePath);
         Media mMovie = new Media(file.getAbsoluteFile().toURI().toString());
 
@@ -73,6 +101,12 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
         try {
             mediaPlayer = new MediaPlayer(mMovie);
+
+            movieView.setMediaPlayer(mediaPlayer);
+
+            movieView.setFitWidth(700);
+            movieView.setFitHeight(500);
+
             mediaPlayer.play();
             mediaPlayer.setOnEndOfMedia(() -> {
                 Movie movie;
@@ -92,7 +126,7 @@ public class MediaViewController<moviePath> extends BaseController implements In
             });
         } catch (Exception exc) {
             exc.printStackTrace();
-            throw new Exception("Could not play song", exc);
+            throw new Exception("Could not play movie", exc);
         }
     }
 

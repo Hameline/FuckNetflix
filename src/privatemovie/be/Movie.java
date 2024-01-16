@@ -32,8 +32,15 @@ public class Movie {
         this.name = name;
     }
 
-    public Movie() {
 
+    public Movie(int id, String name, int rating, String filePath) {
+        this.id = id;
+        this.name = name;
+        this.rating = rating;
+        this.filePath = filePath;
+    }
+
+    public Movie() {
     }
 
 

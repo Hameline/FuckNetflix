@@ -1,5 +1,6 @@
 package privatemovie.dal.db;
 
+import javafx.beans.property.StringProperty;
 import privatemovie.be.Movie;
 import privatemovie.dal.IMovieDataAccess;
 
@@ -11,6 +12,10 @@ import java.util.List;
 public class DAO_DB_Movie implements IMovieDataAccess {
 
     private PrivateMovieDatabaseConnector databseConnector;
+    private static StringProperty fPath;
+    public static String getFilePath() {
+        return fPath.get();
+    }
 
     public DAO_DB_Movie() throws IOException {
         databseConnector = new PrivateMovieDatabaseConnector();
@@ -48,7 +53,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     @Override
     public Movie addMovie(Movie movie) throws Exception {
         // SQL statement for creating a new Movie
-        String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating) VALUES (?,?);";
+        String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating, PersonalRating, FilePath) VALUES (?,?,?,?);";
 
         try (Connection conn = databseConnector.getConnection()) {
             // this makes it able for us to run one statement at the time, so that both will have an effect on the database.
@@ -57,6 +62,8 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 // Bind parameters for Movie
                 stmtMovie.setString(1, movie.getName());
                 stmtMovie.setInt(2, movie.getRating());
+                stmtMovie.setInt(3, movie.getOwnrating());
+                stmtMovie.setString(4, movie.getFilePath());
                 // Run the SQL statement for Movie.
                 stmtMovie.executeUpdate();
                 // Get the Movie ID from the DB
@@ -97,7 +104,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
             conn.setAutoCommit(false);
 
             try {
-                // Delete the song itself
+                // Delete the movie itself
                 sqlCatMovieSQLstmt.setInt(1, deletedMovie.getId());
                 sqlCatMovieSQLstmt.executeUpdate();
 
@@ -108,31 +115,31 @@ public class DAO_DB_Movie implements IMovieDataAccess {
             } catch (SQLException ex) {
                 // Rollback the transaction if an error occurs
                 conn.rollback();
-                throw new Exception("Could not delete song", ex);
+                throw new Exception("Could not delete movie", ex);
             } finally {
                 // Reset auto-commit to true
                 conn.setAutoCommit(true);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            throw new Exception("Could not delete song", ex);
+            throw new Exception("Could not delete movie", ex);
         }
         return deletedMovie;
     }
 
     @Override
     public Movie updateMovie(Movie movie) throws Exception {
-        String sql = "UPDATE FuckNetflix.dbo.Movie SET MovieName = ?, IMDBRating = ?, PersonalRating = ? WHERE MovieID = ?;";
+        String sql = "UPDATE FuckNetflix.dbo.Movie SET MovieName = ?, IMDBRating = ?, PersonalRating = ?, FilePath = ? WHERE MovieID = ?;";
 
         try (Connection conn = databseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 
             // Bind parameters
             stmt.setString(1, movie.getName());
             stmt.setInt(2, movie.getRating());
             stmt.setInt(3, movie.getOwnrating());
-            stmt.setInt(4, movie.getId());
+            stmt.setString(4, movie.getFilePath());
+            stmt.setInt(5, movie.getId());
 
             // Run the specified SQL statement
             stmt.executeUpdate();

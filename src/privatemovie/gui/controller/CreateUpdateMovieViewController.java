@@ -121,7 +121,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
         int rating = Integer.parseInt(txtIMBDScore.getText());
-        Movie movie = new Movie(-1, txtMovieName.getText(), rating);
+        Movie movie = new Movie(-1, txtMovieName.getText(), rating, txtFilePath.getText());
 
         try {
             movieModel.addMovie(movie);

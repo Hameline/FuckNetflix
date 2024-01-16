@@ -343,6 +343,9 @@ public class MainViewController extends BaseController implements Initializable 
 
         MediaViewController controller = loader.getController();
 
+        MediaViewController mediaViewController = loader.getController();
+        mediaViewController.setMainViewController(this);
+
         Stage PopupWindow = new Stage();
         PopupWindow.setTitle("Media View");
         PopupWindow.initModality(Modality.APPLICATION_MODAL);
