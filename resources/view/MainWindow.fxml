@@ -52,7 +52,7 @@
                 <TableColumn fx:id="tbwCategoryTitle" prefWidth="155.0" text="Category" />
               </columns>
             </TableView>
-            <TableView fx:id="tbwMovie" onKeyPressed="#deselectMovie" onMouseClicked="#handleSelectedMovie" prefHeight="719.0" prefWidth="834.0">
+            <TableView fx:id="tbwMovie" prefHeight="719.0" prefWidth="834.0">
               <columns>
                 <TableColumn fx:id="tbwMovieIMDBRating" prefWidth="78.0" text="IMDB Rating" />
                 <TableColumn fx:id="tbwMovieTitle" prefWidth="445.0" text="Movie Title" />

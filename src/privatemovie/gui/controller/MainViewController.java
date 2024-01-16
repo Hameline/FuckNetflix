@@ -3,6 +3,7 @@ package privatemovie.gui.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -91,6 +92,14 @@ public class MainViewController extends BaseController implements Initializable 
         resetCreateCategory();
 
         tbwMovie.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getClickCount() == 1 && tbwMovie.getSelectionModel().getSelectedItem() != null) {
+                try {
+                    storeMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
+                    System.out.println(storeMovie.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             if (mouseEvent.getClickCount() == 2 && tbwMovie.getSelectionModel().getSelectedItem() != null) {
                 try {
                     openMediaView(mouseEvent);
@@ -163,17 +172,7 @@ public class MainViewController extends BaseController implements Initializable 
     }
 
 
-    @FXML
-    private void handleSelectedMovie(MouseEvent mouseEvent) {
-        Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
-        storeMovie = selectedMovie;
-        if (selectedMovie != null) {
-            btnDeleteMovie.setVisible(true);
-            btnUpdateMovie.setVisible(true);
-        }
 
-        resetCreateCategory();
-    }
 
     protected void displayError(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -285,7 +284,6 @@ public class MainViewController extends BaseController implements Initializable 
         if (!(txtFieldSearch.getText().isEmpty())) {
             String search = txtFieldSearch.getText().toLowerCase();
             tbwMovie.setItems(movieModel.searchedMovie(search));
-            System.out.println(search + " controller");
             tbwCategory.setItems(searchCategoriesList);
 
 
@@ -330,6 +328,8 @@ public class MainViewController extends BaseController implements Initializable 
         ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
         movieObservableList.addAll(movieSet);
 
+
+        movieModel.setListOfMovies(movieObservableList);
         tbwMovie.setItems(movieObservableList);
 
         resetCreateCategory();

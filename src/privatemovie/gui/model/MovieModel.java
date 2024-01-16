@@ -23,7 +23,11 @@ public class MovieModel {
         listOfMovies.addAll(movieManager.getAllMovies());
     }
 
-    public ObservableList<Movie> searchedMovie(String search) {
+    public void setListOfMovies(ObservableList<Movie> listOfMovies) {
+        this.listOfMovies = listOfMovies;
+    }
+
+    public ObservableList<Movie> searchedMovie(String search ) {
         ObservableList<Movie> searchedMovie = FXCollections.observableArrayList();
 
         for (Movie movie : listOfMovies) {
