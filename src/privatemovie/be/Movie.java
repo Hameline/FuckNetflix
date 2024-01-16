@@ -1,5 +1,7 @@
 package privatemovie.be;
 
+import java.util.Objects;
+
 public class Movie {
 
     private int id;
@@ -20,13 +22,18 @@ public class Movie {
         this.rating = rating;
     }
 
+    public Movie(int id) {
+        this.id = id;
+    }
+
+    public Movie(String name) {
+        this.name = name;
+    }
+
     public Movie() {
 
     }
 
-    public Movie(int id) {
-        this.id = id;
-    }
 
     public int getId() {
         return id;
@@ -68,6 +75,19 @@ public class Movie {
 
     public String getMovieDuration() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object movieID) {
+        if (this == movieID) return true;
+        if (movieID == null || getClass() != movieID.getClass()) return false;
+        Movie movie = (Movie) movieID;
+        return getId() == movie.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
 

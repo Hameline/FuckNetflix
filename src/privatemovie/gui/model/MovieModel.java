@@ -2,8 +2,12 @@ package privatemovie.gui.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import privatemovie.be.Category;
 import privatemovie.be.Movie;
+import privatemovie.bll.CatMovieManager;
 import privatemovie.bll.MovieManager;
+
+import java.util.List;
 
 public class MovieModel {
     private ObservableList<Movie> listOfMovies;

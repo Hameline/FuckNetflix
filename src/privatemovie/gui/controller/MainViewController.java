@@ -11,7 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -21,16 +20,12 @@ import privatemovie.be.CatMovie;
 import privatemovie.be.Category;
 import privatemovie.be.Movie;
 import privatemovie.bll.CatMovieManager;
-import privatemovie.dal.ICategoryDataAccess;
 import privatemovie.gui.model.CatMovieModel;
 import privatemovie.gui.model.CategoryModel;
 import privatemovie.gui.model.MovieModel;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainViewController extends BaseController implements Initializable {
     public TableColumn tbwMovieIMDBRating;
@@ -56,6 +51,7 @@ public class MainViewController extends BaseController implements Initializable 
     private CatMovieModel catMovieModel;
     private boolean deleteCategory = false;
     private ObservableList<CatMovie> searchedCategoriesList = FXCollections.observableArrayList();
+    private ObservableList<Category> searchCategoriesList = FXCollections.observableArrayList();
 
     public MainViewController() throws Exception {
         try {
@@ -92,6 +88,7 @@ public class MainViewController extends BaseController implements Initializable 
 
 
         menuSearchCategories.setItems(categoryModel.showList());
+        resetCreateCategory();
     }
 
     @FXML
@@ -109,6 +106,7 @@ public class MainViewController extends BaseController implements Initializable 
         //btnUpdateMovie.setVisible(false);
 
        tbwMovie.setItems(movieModel.showList());
+        resetCreateCategory();
     }
 
     @FXML
@@ -164,6 +162,8 @@ public class MainViewController extends BaseController implements Initializable 
             btnDeleteMovie.setVisible(true);
             btnUpdateMovie.setVisible(true);
         }
+
+        resetCreateCategory();
     }
 
     private void displayError(Throwable t) {
@@ -181,6 +181,8 @@ public class MainViewController extends BaseController implements Initializable 
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
+
+        resetCreateCategory();
     }
 
     public void handleSelectedCategory(MouseEvent mouseEvent) throws Exception {
@@ -193,6 +195,11 @@ public class MainViewController extends BaseController implements Initializable 
                 ObservableList<Movie> movieObservableList = FXCollections.observableArrayList(movies);
                 tbwMovie.setItems(movieObservableList); // set the items(songs) in the the view.
                 tbwMovie.refresh();
+
+                txtFieldSearch.setText(" ");
+                searchedCategoriesList.removeAll();
+                searchCategoriesList.removeAll();
+                tbwCategory.setItems(categoryModel.showList());
             } catch (Exception e) {
                 displayError(e);
                 e.printStackTrace();
@@ -204,7 +211,9 @@ public class MainViewController extends BaseController implements Initializable 
             tbwMovie.refresh();
 
             btnCreateCategory.setText("Delete Category");
+            searchCategoriesList.clear();
             deleteCategory = true;
+
         } else {
             setup();
         }
@@ -227,12 +236,16 @@ public class MainViewController extends BaseController implements Initializable 
         if (result.get() == ButtonType.OK) {
 
             categoryModel.deleteCategory(storeCategory);
-            deleteCategory = false;
-            btnCreateCategory.setText("Create Category");
+            resetCreateCategory();
 
         } else {
 
         }
+    }
+
+    private void resetCreateCategory() {
+        deleteCategory = false;
+        btnCreateCategory.setText("Create Category");
     }
 
     public void handleCreateCategory(ActionEvent actionEvent) throws Exception {
@@ -259,15 +272,21 @@ public class MainViewController extends BaseController implements Initializable 
         }
     }
 
-    public void handleSearch(KeyEvent keyEvent) {
+    public void handleSearch(KeyEvent keyEvent) throws Exception {
         if (!(txtFieldSearch.getText().isEmpty())) {
             String search = txtFieldSearch.getText().toLowerCase();
             tbwMovie.setItems(movieModel.searchedMovie(search));
+            System.out.println(search + " controller");
+            tbwCategory.setItems(searchCategoriesList);
+
+
         }
+        /*
         if (!(txtFieldSearch.getText().isEmpty())) {
             String search = txtFieldSearch.getText().toLowerCase();
             tbwCategory.setItems(categoryModel.searchedCategory(search));
         }
+        */
         if (txtFieldSearch.getText().isEmpty()) {
             tbwMovie.setItems(movieModel.getListOfMovies());
             tbwCategory.setItems(categoryModel.getListOfCategories());
@@ -275,12 +294,36 @@ public class MainViewController extends BaseController implements Initializable 
 
         Movie selectedMovie = (Movie) tbwMovie.getSelectionModel().getSelectedItem();
         storeMovie = selectedMovie;
+        resetCreateCategory();
     }
 
     public void handleSearchCategories(ActionEvent actionEvent) throws Exception {
+        /*
         CatMovie catMovie = new CatMovie();
         Category category = (Category) menuSearchCategories.getSelectionModel().getSelectedItem();
         catMovie.setCategoryID(category.getId());
         searchedCategoriesList.add(catMovie);
+
+         */
+        Category category = (Category) menuSearchCategories.getSelectionModel().getSelectedItem();
+        searchCategoriesList.add(category);
+        tbwCategory.setItems(searchCategoriesList);
+
+        Set<Movie> movieSet = new HashSet<>(); // Stores all the movies so that we won't get duplicate Movies
+
+        for (Category c : searchCategoriesList) {
+            if (c != null) {
+                List<Movie> movies = catMovieManager.getAllMoviesFromCategory(c.getId());
+                movieSet.addAll(movies);
+            }
+        }
+
+        ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
+        movieObservableList.addAll(movieSet);
+
+        tbwMovie.setItems(movieObservableList);
+
+        resetCreateCategory();
+
     }
 }

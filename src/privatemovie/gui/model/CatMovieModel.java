@@ -8,6 +8,8 @@ import privatemovie.be.Movie;
 import privatemovie.bll.CatMovieManager;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class CatMovieModel {
     private ObservableList<Movie> listOfMovies;
@@ -34,7 +36,7 @@ public class CatMovieModel {
         return listOfMovies;
     }
 
-    public ObservableList<CatMovie> getListOfCatMovies() {
+    public ObservableList<CatMovie> getListOfCatMovies(Stream<Category> stream) {
         return listOfCatMovies;
     }
 

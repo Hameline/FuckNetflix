@@ -51,7 +51,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private Movie storedMovie = new Movie();
     private Category selectedCategory = new Category();
     private boolean updateCategories = false;
-    private CatMovieModel catMovieModel;
+    private CatMovieModel catMovieModel = new CatMovieModel();
     private CategoryModel categoryModel;
     private MainViewController mainViewController;
 
@@ -129,7 +129,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
     private void handleAddToCategories(Movie addMovieToCategory) {
         try {
             for (Category pCategory : selectedCategories){
-                CatMovie catMovie = new CatMovie(addMovieToCategory.getId(), pCategory.getId());
+                CatMovie catMovie = new CatMovie(addMovieToCategory.getId(), pCategory.getId(), addMovieToCategory.getName());
                 catMovieModel.addMovieToCategory(catMovie);
             }
         } catch (Exception e) {

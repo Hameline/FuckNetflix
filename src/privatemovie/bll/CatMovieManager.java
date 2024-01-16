@@ -7,6 +7,7 @@ import privatemovie.be.Movie;
 import privatemovie.dal.db.DAO_DB_CatMovie;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class CatMovieManager {
 
