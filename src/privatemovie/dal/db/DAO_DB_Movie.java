@@ -6,6 +6,7 @@ import privatemovie.dal.IMovieDataAccess;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +38,9 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 int imbdRating = rs.getInt("IMDBRating");
                 int personalRating = rs.getInt("PersonalRating");
                 String filePath = rs.getString("FilePath");
+                Date localDate = rs.getDate("LastOpenDate");
 
-                Movie movie = new Movie(id, name, imbdRating, personalRating, filePath);
+                Movie movie = new Movie(id, name, imbdRating, personalRating, filePath, localDate);
                 allMovies.add(movie);
             }
             return allMovies;
@@ -53,7 +55,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     @Override
     public Movie addMovie(Movie movie) throws Exception {
         // SQL statement for creating a new Movie
-        String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating, PersonalRating, FilePath) VALUES (?,?,?,?);";
+        String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating, PersonalRating, FilePath, LastOpenDate) VALUES (?,?,?,?,?);";
 
         try (Connection conn = databseConnector.getConnection()) {
             // this makes it able for us to run one statement at the time, so that both will have an effect on the database.
@@ -64,6 +66,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 stmtMovie.setInt(2, movie.getRating());
                 stmtMovie.setInt(3, movie.getOwnrating());
                 stmtMovie.setString(4, movie.getFilePath());
+                stmtMovie.setDate(5, new java.sql.Date(movie.getLastOpenedDate().getTime()));
                 // Run the SQL statement for Movie.
                 stmtMovie.executeUpdate();
                 // Get the Movie ID from the DB
@@ -151,4 +154,24 @@ public class DAO_DB_Movie implements IMovieDataAccess {
         }
         return movie;
     }
+
+    @Override
+    public Movie updateMovieDate(Movie movie) throws Exception {
+        String sql = "UPDATE FuckNetflix.dbo.Movie SET LastOpenDate = ? WHERE MovieID = ?;";
+
+        try (Connection conn = databseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, Date.valueOf(LocalDate.now()));
+            stmt.setInt(2, movie.getId());
+
+            // Run the specified SQL statement
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new Exception("Could not update Movie", ex);
+        }
+        return movie;
+    }
+
 }

@@ -35,6 +35,7 @@ public class MainViewController extends BaseController implements Initializable 
     public TableColumn tbwCategoryTitle;
     public ComboBox menuSearchCategories;
     public Button searchButton;
+    public TextField txtMinimunRating;
     @FXML
     private TextField txtFieldSearch;
     @FXML
@@ -71,6 +72,15 @@ public class MainViewController extends BaseController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (movieModel == null) {
+            try {
+                movieModel = new MovieModel();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
         tbwCategory.setItems(categoryModel.getListOfCategories());
     }
 
@@ -102,13 +112,25 @@ public class MainViewController extends BaseController implements Initializable 
             }
             if (mouseEvent.getClickCount() == 2 && tbwMovie.getSelectionModel().getSelectedItem() != null) {
                 try {
+                    movieModel.updateMovieDate((Movie) tbwMovie.getSelectionModel().getSelectedItem());
                     openMediaView(mouseEvent);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+        handleCheckOldMovies();
    }
+   private void handleCheckOldMovies() {
+       if (!movieModel.shouldDeleteOldMovies().isEmpty()) {
+           try {
+               confirmationAlertDeleteMovies();
+           } catch (Exception e) {
+               throw new RuntimeException(e);
+           }
+       }
+   }
+
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
         if (storeMovie != null) {
@@ -251,6 +273,24 @@ public class MainViewController extends BaseController implements Initializable 
         }
     }
 
+    public void confirmationAlertDeleteMovies() throws Exception {
+        System.out.println(movieModel.shouldDeleteOldMovies());
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("You are about to delete old Movies with less than 6 Personal Rating");
+        alert.setContentText("Are you sure you want to delete?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+
+            for (Movie m : movieModel.shouldDeleteOldMovies()) {
+                movieModel.deleteMovie(m);
+            }
+
+        } else {
+
+        }
+    }
+
     private void resetCreateCategory() {
         deleteCategory = false;
         btnCreateCategory.setText("Create Category");
@@ -283,17 +323,16 @@ public class MainViewController extends BaseController implements Initializable 
     public void handleSearch(KeyEvent keyEvent) throws Exception {
         if (!(txtFieldSearch.getText().isEmpty())) {
             String search = txtFieldSearch.getText().toLowerCase();
+            int minimunRating = Integer.parseInt(txtMinimunRating.getText());
+            if (minimunRating != 0) {
+                movieModel.setMinimunRating(minimunRating);
+            }
+
             tbwMovie.setItems(movieModel.searchedMovie(search));
             tbwCategory.setItems(searchCategoriesList);
 
 
         }
-        /*
-        if (!(txtFieldSearch.getText().isEmpty())) {
-            String search = txtFieldSearch.getText().toLowerCase();
-            tbwCategory.setItems(categoryModel.searchedCategory(search));
-        }
-        */
         if (txtFieldSearch.getText().isEmpty()) {
             tbwMovie.setItems(movieModel.getListOfMovies());
             tbwCategory.setItems(categoryModel.getListOfCategories());

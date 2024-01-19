@@ -1,5 +1,6 @@
 package privatemovie.be;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class Movie {
@@ -9,13 +10,15 @@ public class Movie {
     private int rating;
     private int ownrating;
     private String filePath;
+    private Date lastOpenedDate;
 
-    public Movie(int id, String name, int rating, int ownrating, String filePath) {
+    public Movie(int id, String name, int rating, int ownrating, String filePath, Date lastOpenedDate) {
         this.id = id;
         this.name = name;
         this.rating = rating;
         this.ownrating = ownrating;
         this.filePath = filePath;
+        this.lastOpenedDate = lastOpenedDate;
     }
 
     public Movie(int id, String name, int rating) {
@@ -41,6 +44,19 @@ public class Movie {
     }
 
     public Movie() {
+    }
+
+    public Movie(int id, String name, int rating, String filePath, Date localDate) {
+        this.id = id;
+        this.name = name;
+        this.rating = rating;
+        this.filePath = filePath;
+        this.lastOpenedDate = localDate;
+    }
+
+    public Movie(int ID, Date date) {
+        this.id = ID;
+        this.lastOpenedDate = date;
     }
 
 
@@ -105,6 +121,14 @@ public class Movie {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public Date getLastOpenedDate() {
+        return lastOpenedDate;
+    }
+
+    public void setLastOpenedDate(Date date) {
+        this.lastOpenedDate = date;
     }
 }
 
