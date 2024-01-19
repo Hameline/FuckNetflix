@@ -31,25 +31,13 @@ import java.util.ResourceBundle;
 public class CreateUpdateMovieViewController extends BaseController implements Initializable {
     public ComboBox menuSelectedCategories;
     @FXML
-    private TextField txtMovieName;
+    private TextField txtMovieName, txtIMBDScore, txtFilePath, txtPersonalRating, txtCategory;
     @FXML
-    private TextField txtIMBDScore;
-    @FXML
-    private TextField txtFilePath;
-    @FXML
-    private TextField txtPersonalRating;
-    @FXML
-    private TextField txtCategory;
-    @FXML
-    private Button btnUpdate;
-    @FXML
-    private Button btnCreate;
+    private Button btnUpdate, btnCreate;
     @FXML
     private ComboBox menuTotalCategories;
     @FXML
-    private Button chooseFIle;
-    @FXML
-    private Button btnCancel;
+    private Button chooseFIle, btnCancel;
     private ObservableList<Category> allCategories = FXCollections.observableArrayList();
     private ObservableList<Category> selectedCategories = FXCollections.observableArrayList();
     private Movie selectedMovie = new Movie();
@@ -80,6 +68,7 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         }
     }
 
+    // Initializing models
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -93,8 +82,16 @@ public class CreateUpdateMovieViewController extends BaseController implements I
 
     @Override
     public void setup() {
+        if (movieModel != null) {
+            mainViewController.tbwMovie.setItems(movieModel.getListOfMovies());
+        }
     }
 
+    public void setMainViewController(MainViewController mainViewController) {
+        this.mainViewController = mainViewController;
+    }
+
+    // Here you can update the movies title imdb score and give it your own personal score.
     @FXML
     private void handleUpdate(ActionEvent actionEvent) throws Exception {
         if (updateCategories == true) {
@@ -121,22 +118,28 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         }
     }
 
+    // This is where the movie gets created. Keep in mind that even though you get the option to fill in "personal rating"
+    // it doesn't work since you cant rate a movie you haven't seen yet,you have to rate it in the update method.
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
-        int rating = Integer.parseInt(txtIMBDScore.getText());
+        int imdbRating = Integer.parseInt(txtIMBDScore.getText());
         Date localDate = Date.from(Instant.now());
-        Movie movie = new Movie(-1, txtMovieName.getText(), rating, txtFilePath.getText(), localDate);
+        Movie movie = new Movie(-1, txtMovieName.getText(), imdbRating, txtFilePath.getText(), localDate);
 
-        try {
-            movieModel.addMovie(movie);
-        }
-        catch (Exception e) {
-            displayError(e);
-            e.printStackTrace();
-        } finally {
-            storedMovie = movie;
-            handleAddToCategories(storedMovie);
-            btnCreate.getScene().getWindow().hide();
+        if (imdbRating > 0 && imdbRating <= 10) {
+            try {
+                movieModel.addMovie(movie);
+            }
+            catch (Exception e) {
+                displayError(e);
+                e.printStackTrace();
+            } finally {
+                storedMovie = movie;
+                handleAddToCategories(storedMovie);
+                btnCreate.getScene().getWindow().hide();
+            }
+        } else {
+            mainViewController.informationUser("Your rating value needs to be between 1-10");
         }
     }
 
@@ -159,7 +162,6 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         alert.showAndWait();
     }
 
-
     private void addToComboBox(){
         try {
             allCategories = categoryModel.showList();
@@ -170,12 +172,18 @@ public class CreateUpdateMovieViewController extends BaseController implements I
         }
     }
 
+    // File chooser to put in the movie file which needs to be mp4 or mpeg4
     @FXML
     private void handleChooseFile(ActionEvent actionEvent) {
         FileChooser fc = new FileChooser();
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         File f = fc.showOpenDialog(stage);
-        txtFilePath.setText(f.getPath());
+        if (f.getPath().endsWith(".mp4") || f.getPath().endsWith("mpeg4")) {
+            txtFilePath.setText(f.getPath());
+        }
+        else{
+            mainViewController.informationUser("Your file needs to be in mp4 or mpeg4 format");
+        }
     }
 
     @FXML

@@ -29,13 +29,18 @@ import java.net.URL;
 import java.util.*;
 
 public class MainViewController extends BaseController implements Initializable {
-    public TableColumn tbwMovieIMDBRating;
-    public TableColumn tbwMovieTitle;
-    public TableColumn tbwMoviePersonalRating;
-    public TableColumn tbwCategoryTitle;
-    public ComboBox menuSearchCategories;
-    public Button searchButton;
-    public TextField txtMinimunRating;
+    @FXML
+    private TableColumn tbwMovieIMDBRating;
+    @FXML
+    private TableColumn tbwMovieTitle;
+    @FXML
+    private TableColumn tbwMoviePersonalRating;
+    @FXML
+    private TableColumn tbwCategoryTitle;
+    @FXML
+    private ComboBox menuSearchCategories;
+    @FXML
+    private TextField txtMinimunRating;
     @FXML
     private TextField txtFieldSearch;
     @FXML
@@ -54,6 +59,7 @@ public class MainViewController extends BaseController implements Initializable 
     private boolean deleteCategory = false;
     private ObservableList<CatMovie> searchedCategoriesList = FXCollections.observableArrayList();
     private ObservableList<Category> searchCategoriesList = FXCollections.observableArrayList();
+    private ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
 
     public MainViewController() throws Exception {
         try {
@@ -79,11 +85,11 @@ public class MainViewController extends BaseController implements Initializable 
                 throw new RuntimeException(e);
             }
         }
-
-
         tbwCategory.setItems(categoryModel.getListOfCategories());
     }
 
+    // Sets up a bunch of lists, cell values and some methods that gets called. There are also a listener where you
+    // double-click a movie to open media view
     public void setup () throws Exception {
         //handleBtns();
         if (movieModel != null) {
@@ -96,7 +102,6 @@ public class MainViewController extends BaseController implements Initializable 
         tbwMovieTitle.setCellValueFactory(new PropertyValueFactory<>("name"));
         tbwMovieIMDBRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         tbwMoviePersonalRating.setCellValueFactory(new PropertyValueFactory<>("ownrating"));
-
 
         menuSearchCategories.setItems(categoryModel.showList());
         resetCreateCategory();
@@ -121,6 +126,8 @@ public class MainViewController extends BaseController implements Initializable 
         });
         handleCheckOldMovies();
    }
+
+   // Checks for movies that haven't been opened in 2 years with a rating less than 6
    private void handleCheckOldMovies() {
        if (!movieModel.shouldDeleteOldMovies().isEmpty()) {
            try {
@@ -131,6 +138,7 @@ public class MainViewController extends BaseController implements Initializable 
        }
    }
 
+   // Deletes a selected movie
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
         if (storeMovie != null) {
@@ -149,6 +157,7 @@ public class MainViewController extends BaseController implements Initializable 
         resetCreateCategory();
     }
 
+    // Opens our upload/update movie window
     @FXML
     private void handleUpdateMovie(ActionEvent actionEvent) throws Exception {
         Stage stage = new Stage();
@@ -169,6 +178,7 @@ public class MainViewController extends BaseController implements Initializable 
         tbwMovie.setItems(movieModel.showList());
     }
 
+    // Opens our upload/update movie window
     @FXML
     private void handleUploadMovie(ActionEvent actionEvent) throws Exception {
         Stage stage = new Stage();
@@ -176,6 +186,9 @@ public class MainViewController extends BaseController implements Initializable 
         Parent popupWindow = loader.load();
 
         CreateUpdateMovieViewController controller = loader.getController();
+
+        CreateUpdateMovieViewController createUpdateMovieViewController = loader.getController();
+        createUpdateMovieViewController.setMainViewController(this);
 
         Stage PopupWindow = new Stage();
         PopupWindow.setTitle("Upload/Update Movie");
@@ -192,9 +205,6 @@ public class MainViewController extends BaseController implements Initializable 
         tbwMovie.refresh();
         tbwCategory.refresh();
     }
-
-
-
 
     protected void displayError(Throwable t) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -257,6 +267,7 @@ public class MainViewController extends BaseController implements Initializable 
         }
     }
 
+    // Alert box for deleting of category
     public void confirmationAlertCategory() throws Exception {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -273,6 +284,7 @@ public class MainViewController extends BaseController implements Initializable 
         }
     }
 
+    // Alert box for deleting of movie
     public void confirmationAlertDeleteMovies() throws Exception {
         System.out.println(movieModel.shouldDeleteOldMovies());
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -375,6 +387,7 @@ public class MainViewController extends BaseController implements Initializable 
 
     }
 
+    // Open the media viewer where we can see our uploaded movies
     public void openMediaView(MouseEvent mouseEvent) throws Exception{
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MediaView.fxml"));
@@ -392,5 +405,13 @@ public class MainViewController extends BaseController implements Initializable 
 
         PopupWindow.setScene(new Scene(mediaViewRoot));
         PopupWindow.showAndWait();
+    }
+
+    // Alert box that get used when we either put in the wrong file or the wrong rating
+    public void informationUser(String information){
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setTitle("Regarding movie");
+        info.setHeaderText(information + "");
+        info.showAndWait();
     }
 }

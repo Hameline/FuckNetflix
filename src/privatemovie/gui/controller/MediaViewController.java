@@ -1,14 +1,14 @@
 package privatemovie.gui.controller;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -23,6 +23,8 @@ import java.util.ResourceBundle;
 
 public class MediaViewController<moviePath> extends BaseController implements Initializable {
 
+    @FXML
+    private Label movieTimer, movieTimer2;
     private CategoryModel categoryModel;
     private CatMovieModel catMovieModel;
     private MovieModel movieModel;
@@ -39,7 +41,6 @@ public class MediaViewController<moviePath> extends BaseController implements In
     private int switchFromPlayAndPause = 1;
     private Movie selectedMovie;
     private TableView<Movie> tbwMovie;
-
 
     public MediaViewController() throws Exception {
         try {
@@ -76,6 +77,7 @@ public class MediaViewController<moviePath> extends BaseController implements In
         });
     }
 
+    // Play/pause button that changes between the icons
     @FXML
     private void handlePlayPause(ActionEvent actionEvent) throws Exception {
         if (switchFromPlayAndPause == 1) {
@@ -89,6 +91,7 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
     }
 
+    // Plays the movie file
     public void playMovie(String moviePath) throws  Exception {
         if (moviePath == null) {
             throw new IllegalArgumentException("moviePath cannot be null");
@@ -101,7 +104,9 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
         try {
             mediaPlayer = new MediaPlayer(mMovie);
-
+            movieProgress();
+            playingTimerUp();
+            //playingTimerDown();
             movieView.setMediaPlayer(mediaPlayer);
 
             movieView.setFitWidth(700);
@@ -130,12 +135,19 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
     }
 
+    // Simple stop button for the player
     public void handleStop(ActionEvent actionEvent) throws Exception {
+        if (switchFromPlayAndPause == 2) {
+            playPauseBtn.setText("▶");
+            switchFromPlayAndPause = 1;
+            pause();
+        }
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
 
+    // Calls the playMovie method
     @FXML
     private void play() throws Exception {
         Movie movieToPlay = (Movie) mainViewController.tbwMovie.getSelectionModel().getSelectedItem();
@@ -145,10 +157,76 @@ public class MediaViewController<moviePath> extends BaseController implements In
         }
     }
 
+    // Pauses the movie, but couldn't figure out how to store the current time, so we can unpause it to continue
     @FXML
     private void pause() throws Exception {
         if (mediaPlayer != null) {
             mediaPlayer.pause();
         }
+    }
+
+    // Follows the movie progress but the program gets an error, but it still works
+    public void movieProgress() {
+        ReadOnlyObjectWrapper<Number> progressWrapper = new ReadOnlyObjectWrapper<>(0);
+
+        // Bind the progress bar's progress to the progress of the mediaPlayer
+        progressWrapper.bind(Bindings.createObjectBinding(
+                () -> mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis(),
+                mediaPlayer.currentTimeProperty(),
+                mediaPlayer.totalDurationProperty()
+        ));
+
+        // Bind the progress bar's progress property to the progress wrapper
+        progressBar.progressProperty().bind(progressWrapper);
+    }
+
+    // A timer to show how far along you are
+    private void playingTimerUp() {
+        movieTimer.textProperty().bind(
+                new StringBinding() {
+                    {
+                        super.bind(mediaPlayer.currentTimeProperty());
+                    }
+                    // Makes the timer show in minutes and seconds
+                    @Override
+                    protected String computeValue() {
+                        int time = (int) (mediaPlayer.getCurrentTime().toMillis() / 1000);
+                        int minutes = time / 60;
+                        int seconds = time % 60;
+                        String textSeconds;
+                        if (seconds <= 9) {
+                            textSeconds = "0" + seconds;
+                        } else {
+                            textSeconds = "" + seconds;
+                        }
+                        return minutes + ":" + textSeconds;
+                    }
+                });
+    }
+
+    // Shows the full length of the movie and counts down
+    private void playingTimerDown() {
+        movieTimer2.textProperty().bind(
+                new StringBinding() {
+                    {
+                        super.bind(mediaPlayer.currentTimeProperty());
+                    }
+                    // Makes the timer show in minutes and seconds, and count backwards.
+                    @Override
+                    protected String computeValue() {
+                        int totalTime = (int) (mediaPlayer.getTotalDuration().toMillis() / 1000);
+                        int currentTime = (int) (mediaPlayer.getCurrentTime().toMillis() / 1000);
+                        int remainingTime = totalTime - currentTime;
+                        int minutes = remainingTime / 60;
+                        int seconds = remainingTime % 60;
+                        String textSeconds;
+                        if (seconds <= 9) {
+                            textSeconds = "0" + seconds;
+                        } else {
+                            textSeconds = "" + seconds;
+                        }
+                        return minutes + ":" + textSeconds;
+                    }
+                });
     }
 }
