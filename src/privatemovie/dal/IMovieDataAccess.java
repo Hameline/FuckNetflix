@@ -12,4 +12,6 @@ public interface IMovieDataAccess {
     public Movie deletedMovie(Movie deletedMovie) throws Exception;
 
     public Movie updateMovie(Movie movie) throws Exception;
+
+    public Movie updateMovieDate(Movie movie) throws Exception;
 }

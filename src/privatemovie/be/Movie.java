@@ -1,6 +1,5 @@
 package privatemovie.be;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
@@ -53,6 +52,11 @@ public class Movie {
         this.rating = rating;
         this.filePath = filePath;
         this.lastOpenedDate = localDate;
+    }
+
+    public Movie(int ID, Date date) {
+        this.id = ID;
+        this.lastOpenedDate = date;
     }
 
 
@@ -121,6 +125,10 @@ public class Movie {
 
     public Date getLastOpenedDate() {
         return lastOpenedDate;
+    }
+
+    public void setLastOpenedDate(Date date) {
+        this.lastOpenedDate = date;
     }
 }
 

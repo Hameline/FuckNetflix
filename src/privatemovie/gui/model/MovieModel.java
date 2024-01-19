@@ -8,6 +8,8 @@ import privatemovie.bll.CatMovieManager;
 import privatemovie.bll.MovieManager;
 
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MovieModel {
@@ -36,9 +38,21 @@ public class MovieModel {
     public ObservableList<Movie> shouldDeleteOldMovies() {
     ObservableList<Movie> deleteMovies = FXCollections.observableArrayList();
 
+        // Get the current date
+        Date currentDate = new Date();
+
+        // Create a Calendar instance and set it to the current date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        // Subtract 2 years from the current date
+        calendar.add(Calendar.YEAR, -2);
+        Date twoYearsAgo = calendar.getTime();
+
         for (Movie m : listOfMovies) {
-            boolean b = m.getOwnrating() < 6 && m.getLastOpenedDate().isBefore(LocalDate.now().minusYears(2));
+            boolean b = (m.getOwnrating() < 6) && (m.getLastOpenedDate().before(twoYearsAgo));
             if (b == true) {
+                System.out.println("tries to delete the movie");
                 deleteMovies.add(m);
             }
         }
@@ -114,4 +128,15 @@ public class MovieModel {
 
         movieManager.updateMovie(movie);
     }
+
+    public void updateMovieDate(Movie movie) throws Exception {
+
+        Movie m = selectedMovie;
+        m.setLastOpenedDate(movie.getLastOpenedDate());
+        m.setId(movie.getId());
+
+        movieManager.updateMovieDate(movie);
+    }
+
+
 }

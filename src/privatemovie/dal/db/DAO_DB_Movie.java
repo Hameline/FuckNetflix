@@ -66,7 +66,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
                 stmtMovie.setInt(2, movie.getRating());
                 stmtMovie.setInt(3, movie.getOwnrating());
                 stmtMovie.setString(4, movie.getFilePath());
-                stmtMovie.setDate(5, movie.getLastOpenedDate());
+                stmtMovie.setDate(5, new java.sql.Date(movie.getLastOpenedDate().getTime()));
                 // Run the SQL statement for Movie.
                 stmtMovie.executeUpdate();
                 // Get the Movie ID from the DB
@@ -154,4 +154,24 @@ public class DAO_DB_Movie implements IMovieDataAccess {
         }
         return movie;
     }
+
+    @Override
+    public Movie updateMovieDate(Movie movie) throws Exception {
+        String sql = "UPDATE FuckNetflix.dbo.Movie SET LastOpenDate = ? WHERE MovieID = ?;";
+
+        try (Connection conn = databseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, Date.valueOf(LocalDate.now()));
+            stmt.setInt(2, movie.getId());
+
+            // Run the specified SQL statement
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new Exception("Could not update Movie", ex);
+        }
+        return movie;
+    }
+
 }

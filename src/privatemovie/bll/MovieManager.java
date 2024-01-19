@@ -28,4 +28,8 @@ public class MovieManager {
     public Movie updateMovie(Movie movie) throws Exception {
         return movieDAO.updateMovie(movie);
     }
+
+    public Movie updateMovieDate(Movie movie) throws Exception {
+        return movieDAO.updateMovieDate(movie);
+    }
 }

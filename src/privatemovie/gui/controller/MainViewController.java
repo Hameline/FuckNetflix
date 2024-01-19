@@ -78,13 +78,6 @@ public class MainViewController extends BaseController implements Initializable 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            if (movieModel.shouldDeleteOldMovies() != null) {
-                try {
-                    confirmationAlertDeleteMovies();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
 
 
@@ -119,13 +112,25 @@ public class MainViewController extends BaseController implements Initializable 
             }
             if (mouseEvent.getClickCount() == 2 && tbwMovie.getSelectionModel().getSelectedItem() != null) {
                 try {
+                    movieModel.updateMovieDate((Movie) tbwMovie.getSelectionModel().getSelectedItem());
                     openMediaView(mouseEvent);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+        handleCheckOldMovies();
    }
+   private void handleCheckOldMovies() {
+       if (!movieModel.shouldDeleteOldMovies().isEmpty()) {
+           try {
+               confirmationAlertDeleteMovies();
+           } catch (Exception e) {
+               throw new RuntimeException(e);
+           }
+       }
+   }
+
     @FXML
     private void handleDeleteMovie(ActionEvent actionEvent) throws Exception {
         if (storeMovie != null) {
@@ -269,9 +274,10 @@ public class MainViewController extends BaseController implements Initializable 
     }
 
     public void confirmationAlertDeleteMovies() throws Exception {
+        System.out.println(movieModel.shouldDeleteOldMovies());
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("You are about to delete Category");
+        alert.setHeaderText("You are about to delete old Movies with less than 6 Personal Rating");
         alert.setContentText("Are you sure you want to delete?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
