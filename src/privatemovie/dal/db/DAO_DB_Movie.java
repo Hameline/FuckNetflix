@@ -12,20 +12,20 @@ import java.util.List;
 
 public class DAO_DB_Movie implements IMovieDataAccess {
 
-    private PrivateMovieDatabaseConnector databseConnector;
+    private final PrivateMovieDatabaseConnector databaseConnector;
     private static StringProperty fPath;
     public static String getFilePath() {
         return fPath.get();
     }
 
     public DAO_DB_Movie() throws IOException {
-        databseConnector = new PrivateMovieDatabaseConnector();
+        databaseConnector = new PrivateMovieDatabaseConnector();
     }
     @Override
     public List<Movie> getAllMovies() throws Exception {
         ArrayList<Movie> allMovies = new ArrayList<>();
 
-        try (Connection conn = databseConnector.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              Statement stmt = conn.createStatement())
         {
             String sql = "SELECT * FROM FuckNetflix.dbo.Movie;";
@@ -57,7 +57,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
         // SQL statement for creating a new Movie
         String sqlMovie = "INSERT INTO FuckNetflix.dbo.Movie (MovieName, IMDBRating, PersonalRating, FilePath, LastOpenDate) VALUES (?,?,?,?,?);";
 
-        try (Connection conn = databseConnector.getConnection()) {
+        try (Connection conn = databaseConnector.getConnection()) {
             // this makes it able for us to run one statement at the time, so that both will have an effect on the database.
             conn.setAutoCommit(false);
             try (PreparedStatement stmtMovie = conn.prepareStatement(sqlMovie, Statement.RETURN_GENERATED_KEYS)) {
@@ -100,7 +100,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
         String sqlCatMovieSQL = "delete from FuckNetflix.dbo.CatMovie where MovieID = ?";
         String sqlMovie = "DELETE FROM FuckNetflix.dbo.Movie WHERE MovieID = ? ";
 
-        try (Connection conn = databseConnector.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement sqlCatMovieSQLstmt = conn.prepareStatement(sqlCatMovieSQL);
              PreparedStatement sqlMoviestmt = conn.prepareStatement(sqlMovie)) {
             // Start a transaction
@@ -134,7 +134,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     public Movie updateMovie(Movie movie) throws Exception {
         String sql = "UPDATE FuckNetflix.dbo.Movie SET MovieName = ?, IMDBRating = ?, PersonalRating = ?, FilePath = ? WHERE MovieID = ?;";
 
-        try (Connection conn = databseConnector.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // Bind parameters
@@ -159,7 +159,7 @@ public class DAO_DB_Movie implements IMovieDataAccess {
     public Movie updateMovieDate(Movie movie) throws Exception {
         String sql = "UPDATE FuckNetflix.dbo.Movie SET LastOpenDate = ? WHERE MovieID = ?;";
 
-        try (Connection conn = databseConnector.getConnection();
+        try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setDate(1, Date.valueOf(LocalDate.now()));

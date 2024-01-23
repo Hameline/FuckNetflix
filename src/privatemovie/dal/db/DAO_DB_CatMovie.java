@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DAO_DB_CatMovie implements ICatMovieDataAccess {
 
-    private PrivateMovieDatabaseConnector databaseConnector;
+    private final PrivateMovieDatabaseConnector databaseConnector;
 
     public DAO_DB_CatMovie() throws Exception {
         databaseConnector = new PrivateMovieDatabaseConnector();
